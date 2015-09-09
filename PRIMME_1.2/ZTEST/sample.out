@@ -1,0 +1,79 @@
+PRIMME will allocate the following memory:
+real workspace, 145216 bytes
+int  workspace, 192 bytes
+ Matrix: HA.mtx
+// ---------------------------------------------------
+//                 primme configuration               
+// ---------------------------------------------------
+primme.n = 245 
+primme.nLocal = 245 
+primme.numProcs = 1 
+primme.procID = 0 
+
+// Output and reporting
+primme.printLevel = 3 
+
+// Solver parameters
+primme.numEvals = 1 
+primme.aNorm = 3.248149e+01 
+primme.eps = 1.000000e-12 
+primme.maxBasisSize = 15 
+primme.minRestartSize = 6 
+primme.maxBlockSize = 1
+primme.maxOuterIterations = 2147483647
+primme.maxMatvecs = 2147483647
+primme.target = primme_smallest
+primme.numTargetShifts = 0
+primme.dynamicMethodSwitch = 0
+primme.locking = 0
+primme.initSize = 0
+primme.numOrthoConst = 0
+primme.iseed = -1 -1 -1 -1
+
+// Restarting
+primme.restarting.scheme = primme_thick
+primme.restarting.maxPrevRetain = 1
+
+// Correction parameters
+primme.correction.precondition = 0
+primme.correction.robustShifts = 0
+primme.correction.maxInnerIterations = -1
+primme.correction.relTolBase = 0
+primme.correction.convTest = primme_adaptive_ETolerance
+
+// projectors for JD cor.eq.
+primme.correction.projectors.LeftQ = 0
+primme.correction.projectors.LeftX = 1
+primme.correction.projectors.RightQ = 0
+primme.correction.projectors.SkewQ = 0
+primme.correction.projectors.RightX = 0
+primme.correction.projectors.SkewX = 1
+// ---------------------------------------------------
+OUT 1 conv 0 blk 0 MV 6 Sec 3.682137E-03 EV -5.933568E-01 |r| 2.429E-01
+OUT 2 conv 0 blk 0 MV 8 Sec 4.815102E-03 EV -6.322180E-01 |r| 1.602E-01
+OUT 3 conv 0 blk 0 MV 11 Sec 6.551027E-03 EV -6.535767E-01 |r| 4.468E-02
+OUT 4 conv 0 blk 0 MV 17 Sec 9.989977E-03 EV -6.559350E-01 |r| 4.869E-03
+OUT 5 conv 0 blk 0 MV 22 Sec 1.290798E-02 EV -6.562186E-01 |r| 1.279E-02
+OUT 6 conv 0 blk 0 MV 29 Sec 1.678896E-02 EV -6.674438E-01 |r| 1.002E-02
+OUT 7 conv 0 blk 0 MV 34 Sec 1.962304E-02 EV -6.675663E-01 |r| 5.676E-04
+OUT 8 conv 0 blk 0 MV 39 Sec 2.254415E-02 EV -6.675665E-01 |r| 3.683E-05
+OUT 9 conv 0 blk 0 MV 44 Sec 2.559114E-02 EV -6.675665E-01 |r| 2.832E-06
+OUT 10 conv 0 blk 0 MV 49 Sec 3.038406E-02 EV -6.675665E-01 |r| 1.580E-07
+OUT 11 conv 0 blk 0 MV 54 Sec 3.439403E-02 EV -6.675665E-01 |r| 8.839E-09
+OUT 12 conv 0 blk 0 MV 59 Sec 3.719115E-02 EV -6.675665E-01 |r| 5.541E-10
+OUT 13 conv 0 blk 0 MV 64 Sec 3.991795E-02 EV -6.675665E-01 |r| 2.351E-11
+#Converged 1 eval[ 0 ]= -6.675665e-01 norm 2.350825e-11 Mvecs 64 Time 0.039928
+Wallclock Runtime   : 0.040131
+User Time           : 0.037742 seconds
+Syst Time           : 0.001803 seconds
+Eval[1]: -6.675665068136609E-01 rnorm: 2.350825382167929E-11 
+ 1 eigenpairs converged
+Tolerance : 3.248148675475131E-11 
+Iterations: 13
+Restarts  : 2
+Matvecs   : 64
+Preconds  : 0
+
+
+#,64,0.0
+
