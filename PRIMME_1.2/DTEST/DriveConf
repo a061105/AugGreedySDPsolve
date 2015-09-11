@@ -3,7 +3,7 @@
 // ///////////////////////////////////////////////////////////////////
 // Matrix file  (matlab format)
 driver.matrixFile    = LUNDA.mtx
-driver.matrixFile    = G1_test.mtx
+driver.matrixFile    = G81_test.mtx
 
 // Output file name
 driver.outputFile    = sample.out
