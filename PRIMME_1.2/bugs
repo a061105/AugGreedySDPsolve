@@ -1,0 +1,489 @@
+ 	
+================================================================================
+FIXED BUGS
+================================================================================
+	2) Why the following errors appear?
+ 		"driver_par.o(.text+0x2d): In function `generatePermutations':
+		: undefined reference to `primme_calloc'
+	   It simply needs $(INCLUDE) in the Makefile_par. 
+FIXED
+
+	Documentation in restart.c/pack_converged_cof() is slightly confusing
+	minRestartSize of unconverged eigenpairs will always be retained.
+so restartSize = numFlagged + minRestartSize -anyInitialGuesses still availble
+	All converged are retained BEYOND that. Initial guesses are considered
+FIXED
+
+	In QMRs, the alpha_prev are real because they are the diagonal of 
+	the Hermitian matrix H. The betas should also be real as the 
+	ratio of (r,Kr) with K Hermitian.
+	The same applies for the Beta, Delta, Psi, Beta_prev, Delta_prev, Psi_prev
+FIXED in the inner_solve.base_newTemp.c
+
+        Perform step 10 of QMRs (the unconventional 2 axpys) with hand 
+	coded loop to improve locality.
+	At the same place, there is a bug in ZSRC. Note the -gamma 
+	used in complex code. Still works but slow... MUST FIX!!!! (fixed in SEND/PRIMME/)
+   DSRC:
+      gamma = c*c*Theta_prev*Theta_prev;
+      eta = alpha_prev*c*c;
+      Num_scal_dprimme(primme->nLocal, gamma, delta, 1);
+      if (Using_d_asWork)
+         Num_axpy_dprimme(primme->nLocal, eta, w, 1, delta, 1);
+      else
+         Num_axpy_dprimme(primme->nLocal, eta, d, 1, delta, 1);
+   ZSRC:
+      gamma = c*c*Theta_prev*Theta_prev;
+      {ztmp.r = -gamma; ztmp.i = 0.0L;}
+      zd_mult_primme(eta, alpha_prev, c*c);
+      Num_scal_zprimme(primme->nLocal, ztmp, delta, 1);
+      if (Using_d_asWork)
+         Num_axpy_zprimme(primme->nLocal, eta, w, 1, delta, 1);
+      else
+         Num_axpy_zprimme(primme->nLocal, eta, d, 1, delta, 1);
+FIXED
+
+	The update of attainableTol is not performed in the same way
+	as in the paper. The difference is sqrt(k)*Tol vs sqrt(k)*maxConvTol.
+	Why? I think the paper one reduces it significantly
+	thus saving lots of orthogonalizations. **I do not understand this now**
+NO NEED TO FIX: We check:  Tol > geometric mean of normPr and r in check_convergence.c
+	The maxConvTol is updated as the largest norm(r) which seems ok.	
+
+	-------------------------------
+	Locking issue and documentation are WRONG about the returning of the 
+	flags. There is not enough space for saving the flags with locking.
+	flags(maxBasisSize)
+	evals(numEvals)
+	By the way there is the ipivot array which we always allocate but 
+	rarely used (only by UDU).
+			ok fixed it. It returns a flag in intWork[0]
+FIXED
+	-------------------------------
+
+	-0----------------
+	Last inner solve update:
+	Num_scal
+	Num_axpy
+	Maybe it's better to do Num_axpy -> w
+			then 	Num_copy -> d
+	Or just write your own. Same thing for the x = a*x+b*y 
+	Actually even better is to alternate buffers between w and d.
+	 	ok I fixed that but the numerics (!!) are different wow...
+		I think the new version is better (?)
+	in the most current inner_solve.base.c we implement the 2 mults 1 add code.
+	The inner_solve.base_withBLAS.c calls BLAS instead. Own code with -O3 is
+	a little faster (4-8%) especially for the Complex code.
+
+	Using_d_aswork in InnerSolve is being asked repeatedly. Alternatively,
+	set two pointers once in the iteration (Ap and wWork) and switch them
+	point Ap to w and wWork to d. Or better just change the pointers at the end,
+	i.e., tmp=d;d=w;w=tmp;
+FIXED 
+	-0----------------
+
+	-1----------------
+Hi Andreas,
+
+I just started experimenting with primme and I must say I'm pretty happy with it, thanks for making it public.
+
+While I'm debugging my code I usually do a
+
+#include <fenv.h>
+feenableexcept( FE_OVERFLOW | FE_DIVBYZERO | FE_INVALID );
+
+which will catch some of the arithmetic exceptions. With the help of this I noticed that in line 1388 of main_iter_z.c the argument of the second log, jdq_conv_rate, is sometimes zero. When exceptions are enabled as above, this terminates the program, but if exceptions are not enabled, nothing goes wrong and the program runs happily, the eigenvalues are found, etc.
+
+The reason log(0) doesn't cause problems later on is that later in the same function the min/max macros always return a meaningful value. But I still think that log(0) type of stuff should not be encountered so I suggest doing an explicit check for it.
+
+I'm using zprimme( ) with DYNAMIC configuration.
+
+Cheers,
+Daniel Nogradi
+nogradi@lorentz.leidenuniv.nl
+
+FIXED by initializing the gdk/jdq_conv_rate to 1e-4 (not to zero).
+
+	-1----------------
+
+	-2----------------
+Hi Andreas,
+
+In case you are interested here is another suggestion:
+
+In the HTML docs you have the following prototype:
+
+void (*globalSumDouble)
+(double *sendBuf, double *recvBuf, int *count, primme_params *primme);
+
+but in the primme.h the above is
+
+void (*globalSumDouble)
+(void *sendBuf, void *recvBuf, int *count, struct primme_params *primme );
+
+Not a big deal but you might want to correct the docs (void vs. double).
+
+Cheers,
+Daniel
+FIXED
+
+	-2----------------
+	-3----------------
+Change the Num_dot_primme to do the dot products locally... Forget 
+the zdotsubc which make the whole code dependent on Fortran.
+	PRIMME/PRIMMESRC/DSRC/numerical_d.c
+	PRIMME/PRIMMESRC/ZSRC/numerical_z.c
+	-3----------------
+FIXED
+	-4----------------
+THe documentation does not say the following!!!
+ *    Calling dprimme with all evals, evecs, resNorms set to NULL
+ *    returns the int and real memory required in the following primme fields:
+ *            int primme->intWorkSize : bytes of int workspace needed
+ *       long int primme->realWorkSize: bytes of real workspace needed
+	-4----------------
+	-5----------------
+For some reason driver_seq.c allocates evecs with nLocal*(numEvals+maxBlockSize)This is not right. No space for blocksize is needed...
+FIXED
+	-5----------------
+
+
+	The comments in primme_set_method() do not reflect the DYNAMIC choice
+FIXED
+
+	perhaps initialize CostModel.accum_jdq_gdk in the initialize(). 
+	Tony Scott found that when too few iters, the ratio is not defined so 
+	no suggestion...
+FIXED initialized to 1.0 (to suggest Dynamic)
+
+	primme_interface.c line 133: Shouldn't the comment read ERROR(primme_valloc)?
+   if ( (ptr = valloc(byteSize)) == NULL) {
+      if (gethostname(machineName, 256) < 0) {
+         fprintf(stderr, "ERROR(primme_calloc): Could not get host name\n");
+      }
+FIXED
+
+	BUG for multiple calls to primme. Communicated by Manish Jain at Berkeley. Aug 22, 2012.
+	correction.base.c line #145:
+   	static int numPrevRitzVals = 0; /* Size of prevRitzVals                   */
+
+	If primme is called a second time from the same program, numPrevRitzVals is NOT zeroed.
+	So it stays to whatever it was before.
+	To resolve this we must initialize numPrevRitzVals outsize in the initialization and 
+	pass inside all the time.
+FIXED
+
+------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- 
+* BUGS in locking.c
+  1. Look at Felix Winterhalter's email. 
+     Partial solution: don't let basisSize + numLocked go above n 
+	(as numLocked is modified in the loop).
+   Use:
+       int entireSpace = (*basisSize+*numLocked >= primme->n);
+	...
+       if ((flag[i]!=UNCONDITIONAL_LOCK_IT && norms[candidate] >= tol 
+			            && !entireSpace ) || 
+          (flag[i]==UNCONDITIONAL_LOCK_IT && norms[candidate] >= attainableTol
+			            && !entireSpace )) {
+  Note:
+  if (basisSize+numLocked >= primme->n), then since V \orthog evecs,
+  a RR on [V] should provide the as good an answer as possible for 
+  the needed epairs in V. Thus it is possible to have a LockingProblem.
+FIXED 
+  2. In this extreme situation, the workinW = 1. The comments say that:  
+    "we use the W[LAST] as temporary space, but only after W[LAST] has 
+     been used to compute residual(LAST) -the while loop starts from LAST."
+     However, the loop later did not do that. It starts from 
+	basisSize-numCandidates to <basisSize. Thus the LAST norm 
+     is not computed accurately. We must reverse it as follows:
+
+   for (i = *basisSize-1, candidate = numCandidates-1; 
+      i >= *basisSize-numCandidates; i--, candidate--) {
+FIXED 
+  3.  Line 205 in locking_z.c
+   attainableTol = sqrt(primme->numOrthoConst+*numLocked)*(*maxConvTol);
+	if numLocked = 0, then attainable becomes 0.
+	Then, later on in line 266:
+   if (flag[i]==UNCONDITIONAL_LOCK_IT && norms[candidate] >= attainableTol
+	 flag[i] = UNCONVERGED;
+   which makes no sense since it should have locked it.
+	We should make it: attainableTol = max(tol, the above)
+FIXED 
+
+------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- 
+New BUG:
+Mergesort in correction_d.c does not sort and merge at all in case of interior.
+Then ilev and sortedIndex is undefined in
+   if (primme->target != primme_smallest && primme->target != primme_largest) {
+
+      for (blockIndex = 0; blockIndex < blockSize; blockIndex++) {
+         sortedIndex = ilev[blockIndex];
+         blockOfShifts[blockIndex] = 
+	    primme->targetShifts[ min(primme->numTargetShifts-1, sortedIndex) ];
+         if (sortedIndex < numPrevRitzVals) {
+            approxOlsenEps[blockIndex] = 
+            fabs(prevRitzVals[sortedIndex] - sortedRitzVals[sortedIndex]);
+         }  
+         else {
+            approxOlsenEps[blockIndex] = blockNorms[blockIndex];
+         }  
+      } /* for loop */
+
+***** 
+MergeSort() in correction_d.c does not change ilev in such a way to reflect iev
+not a problem because usually i do not target out of order the unconverged evals. 
+Only for interior, but the interior has the above bug.
+****
+
+The above two problems must be addressed together. Aparently, sorting locked and ritz 
+into sortedRitzVals with interior eigenvalues is difficult (there are many cases, and 
+most importantly spurious evals appear all the time). But because the sorted evals are needed 
+for estimating the deltaeps between iterations for Olsen's method (and not for robust
+shifting which is not used for interior eigs) accuracy may not be as important.
+
+To fix it, we do not sort for the interior case. So MergeSort stays as is (with extra
+comments). Then the interior case is treated as soft-locking. ilev and sortedRitzVals 
+become iev and ritzVals respectively. 
+Then we need to adjust the above code to avoid accessing the wrong things (line 243 becomes
+  numLocked), and we need to copy the appropriate number of vals to prevRitzVals (we 
+  put the code in each subcase).
+
+One additional change: After locking() prevRitzVals does not correspond to the unconverged
+eigenvalues in ritzVals. Those evals locked need to be removed from prevRitzVals too.
+
+To permute the prevRitzVals similarly to hVals and keep track of what we rid of from 
+hVals and remove it from prevRitzVals is difficult. Moreover, if new initial guesses come
+in there is no correspondance with the old ritz values. Since their job is not critical
+we approximate it by removing the first numLocked from prevRitzVals in lock_vectors().
+
+FIXED  
+------- ------- ------- ------- ------- ------- ------- ------- ------- ------- ------- 
+* See in PRIMME email folder for Robert Rueger email. Three things to fix:
+	1. Turn primme_PrintStackTrace_f77_ into lower case letters for ifort
+	2. Comment out primme_get_time() since it does not work with Windows
+	3. Make: iseed from 0 to 4095 and iseed[3] = odd
+		assuming pmax processors and maxi=4096
+	   Unique quadruples per proc if procID < 4096^3   (140 trillion processes)
+	   This code has been tested:
+
+	   iseed[0] = procID % 4096;
+           iseed[1] = (int)(procID/4096+1) % 4096;
+           iseed[2] = (int)((procID/4096)/4096+2) % 4096;
+           iseed[3] = (2*(int)(((procID/4096)/4096)/4096)+1) % 4096;
+
+	I tested it in matlab and in C. Here's matlab
+	pmax = 6^5; maxi = 6; iseed=zeros(4,pmax);
+	for p = 1:pmax
+		iseed(1,p) = mod(p-1,maxi);
+		iseed(2,p) = mod(floor((p-1)/maxi)+1,maxi);
+		iseed(3,p) = mod(floor(((p-1)/maxi)/maxi)+2,maxi);
+		iseed(4,p) = mod(2*floor((((p-1)/maxi)/maxi)/maxi)+1,maxi);
+	end
+	same = 0;
+	for p=1:pmax, for j=1:p-1
+           if (iseed(:,j)==iseed(:,p)), same=same+1;break;end
+        end; end; pmax-same
+
+iseed() could be accessed by display_params() before all values are initialized.
+(The problem arises not in the FullConf test but in the MinConf test case).
+I should still initialize all the values of the array earlier to avoid bad use of the display_params().
+Without knowing procID we cannot set iseed properly for parallel programs. We initialize these as -1.
+And later PRIMME sets these using the algorithm above.
+FIXED (all)
+
+gfortran-mp-4.5 -o seqf77_dprimme  driver_f77seq.o ilut.o amux.o -L/Users/dstrubbe/Software/PRIMME -I/Users/dstrubbe/Software/PRIMME/PRIMMESRC/COMMONSRC -lprimme -lm  -Wl,-framework -Wl,vecLib  
+Undefined symbols for architecture x86_64:
+ "_lnblnk_", referenced from:
+     _MAIN__ in driver_f77seq.o
+ld: symbol(s) not found for architecture x86_64
+The problem is that lnblnk is declared external, but it is intrinsic in current versions of gfortran: http://gcc.gnu.org/onlinedocs/gfortran/LNBLNK.html. 
+Replaced it with LEN_TRIM (intrinsic F95)
+FIXED
+
+  Make a F77 interface to primme_Free.
+  Mention in readme that primme_Free(&primme) is used to clear the 
+  data struct and free allocated space (realWork, intWork, etc)
+FIXED
+
+  if one sets only maxBlockSize but not maxBasisSize, maxBasisSize is not 
+  adjusted accordingly...
+FIXED
+
+   Improve blockSize selection, esp in LOBPCG. Make blockSize no more than
+   numEvals-numConverged.
+FIXED
+
+  The way the block is chosen in soft locking may have issues.
+  If some eigenvalues are flagged as converged (esp with large block
+  sizes), they will not be picked until the end. So the block picks 
+  higher ones. However, these may have converged very early 
+  representing much larger ones. Keeping the location i flagged
+  may prevent the i-th evl to converge fast. We need to validate
+  in each step if each eigenvalue remains converged. A cheap way
+  is to see if |lambda_prev(i)-lambda_curr(i)| < |res(i). If not, 
+  unflag it.
+  I changed the call to reset_flags with a new routine check_reset_flags
+FIXED 
+
+	get_member_f77 does not work for pointers because we pass *ptr not **ptr.
+	Look at Robert Ruger's email for a solution.
+	This function is supposed to be called from within MV.f or precond.f
+	which receives the primme as: *primme. Other Fortran functions use the
+	primmetop_get_member since they have **primme.
+       case PRIMMEF77_matrixMatvec:
+	-	      ptr = (void *) primme->matrixMatvec;
+	+	      *(void **) ptr = (void *) primme->matrixMatvec;
+FIXED
+
+	DYNAMIC method decisions made on a parallel environment may be different 
+	on different processors, leading to hanging or crashing. We must make
+	sure that the ratios that we use to decide are global(maxed) or easier
+	global averaged over all procs.
+FIXED
+
+	* readuc.c  , readfullMTX: nzmax = 2nnz-n. But if I store the full matrix there 
+	is no point for this. IA() is set correctly using nnz though.
+        * In readuc.c, if the matrix does not have any elements in a row, 
+  	the matrix is not set up well. 
+	* in readuc.c. Some are confused whether the column or the row should run 
+	fast in the mtx files. We automated this by checking to see what is the 
+	fast running column.
+FIXED
+
+	The driver reads primme but overwrites some settings by the set_method 
+	This is not actually a bug. But a few if() were added in primme_interface
+	so that it does not overwrite some previously set values of maxPrevRetained
+FIXED 
+
+ 	The test drivers should report whether there has been a locking problem.
+  	(and what it is).
+FIXED
+
+	Ortho*.c was doing the explicit inner product twice if (nOrth > 1). 
+	Removed the extra code. Thanks to Felix Winterhalter.
+FIXED
+
+	In set_method the setting of maxBasisSize and minRestartSize was
+	performed before the setting of other parameters of the method 
+	(e.g., blocksize, maxPrevRetain, etc). Most cases it didn't matter
+	but for some, the maxPrevRetain had to be set properly first. 
+	Moved the maxBasisSize and minRetartSize at the end.
+FIXED
+
+	The documentation needs to describe better how to get LOBPCG_orthobasis_window.
+	What do we set except of the method? (maxBlockSize). Improved.
+FIXED
+
+	ParaSails is included. We need to make it though.
+FIXED (semi)
+
+	
+================================================================================
+STILL NOT FIXED BUGS
+================================================================================
+	The computation of the eigenvalues of H on many procs presents a danger
+	on even slightly heterogeneous environments.
+NOT FIXED
+
+	Some documentation is needed specifying that when compiling PRIMME with c++,
+	the include directories when compiling the functions that will call primme,
+	must point to the primme.h and Complex.h in the PRIMME installation directory. 
+	Otherwise non compatible mangling is performed.
+NOT FIXED
+
+	With Intel compilers to link with Fortran fc we need 
+	-nofor-main    do not link against Fortran main object
+               Used when linking Fortran objects with C main program
+NOT FIXED
+
+	Final RR for locking problems MUST be implemented. 
+	And once it is performed, we may need to restart the algorithm.
+	However, the requirement of memory is numevals^2. When numEvals is large
+	relative to nLocal, we may not have memory.
+	Needs rethinking.
+NOT FIXED
+
+	**** BUG: 
+	Solving the 5x5 diagonal diag([1:5]) we get wrong eigenvalues:
+Allocating real workspace: 1344 bytes
+Allocating integer workspace: 88 bytes
+OUT 1 conv 0 blk 0 MV 3 Sec 1.020432E-04 EV  4.974077E+00 |r| 3.813E+00
+OUT 2 conv 0 blk 0 MV 4 Sec 1.189709E-04 EV  3.332223E+00 |r| 2.125E+00
+OUT 3 conv 0 blk 0 MV 5 Sec 1.411438E-04 EV  2.176434E+00 |r| 1.907E+00
+retain_previous: numPrevRetained: 1
+Lock epair[ 1 ]= 1.000000e+00 norm 3.1579e-15 Mvecs 6 Time 1.6499e-04 Flag 2
+Lock epair[ 2 ]= 4.000000e+00 norm 1.7092e-15 Mvecs 6 Time 1.7095e-04 Flag 2
+Lock epair[ 3 ]= 9.000000e+00 norm 4.6894e-15 Mvecs 6 Time 1.7405e-04 Flag 2
+Lock epair[ 4 ]= 1.600000e+01 norm 5.1796e-15 Mvecs 6 Time 1.7715e-04 Flag 2
+Lock epair[ 5 ]= 2.500000e+01 norm 2.5000e+01 Mvecs 6 Time 1.8096e-04 Flag 2
+    Successful return
+	CANNOT REPLICATE... Do not remember how this came about.
+	Probably it has to do with Felix Winterhalter's bug.
+UNKNOWN (probably fixed)
+
+	In locking. We always solve the H even in cases when no 
+	initial guesses have entered. In that case, we can save 
+	time by setting the decomposition to eigenvalues and e_i
+	assuming that I deal specially with the eigenvectors of Hsub.
+	Actually the fix is simple if we assume the eigenvalues are in order:
+	Just put: if (numNewVectors >0) { solve_H }
+	around the last solve_H in locking. The problem however, is that 
+	some eigenvalues in H (on the diagonal) could be out of order. 
+	I guess we could reorder them with insertionSort and avoid calling solve_H.
+	IF we implement this, we could also improve the way we remove 
+	locked prevRitzValues (since no new vecs come in)... 
+NOT FIXED (minor efficiency gain. Maybe later)
+
+	Change data types to PRIMME_INT, PRIMME_DOUBLE etc.?
+NOT FIXED
+
+	Why do I need primme.correctionParams.precondition = 1 or 0?
+	Isn't the existence of a non null preconditioning pointer enough?
+NOT FIXED
+
+	update_projection computes the new blocksize columns in H. 
+	First it does gemm on the numCols x blocksize and then gemv on the 
+	upper triang of the new block x block array. Is this efficient?
+	For example, if block=1, we could have appended the numcols+1
+	entry to the gemm. Similarly, a bit of duplication might be ok
+	if the block is not too big... Need to make a study of it
+	and reimplement it. Moreover the sizes of X, Y in the comments 
+	do not include the new blocksize vectors
+NOT FIXED
+================================================================================
+Future additional features
+================================================================================
+ 
+* A complex*16 ilut.f
+
+* Figure out a way to inquire about memory requirements from f77
+
+* Make an option without locking for the code to return the evecs in 
+  primme->realWork not in evecs. This way evecs can be null
+  and avoid the extra space.
+  However, this is a dangerous change that may affect some methods.
+
+* A basic form of IVE that does not increase the block size too much.
+  (say max of 2 or three depending on basisSize -- or even 1 should do)
+
+* Matlab interface
+
+* A double SVD interface ATA for smallest or [ 0 AT; A; 0] for interior
+
+* provide for primme->broadcast function that allows the code to be 
+  used in heterogeneous parallel machines. 
+  Only do this is primme->broadcast !=NULL
+
+* Implement: relative convergance:  Res_i < Tol*ueta_i 
+  in check_convergance and locking (semantics of Practically converged?)
+
+* We could check Hermiticity of A, ensuring that the H = V'*A*V is 
+  Hermitian too, within a certain threshold, e.g., H-H' < |H|*machEps?
+  This may only occur during the init phase.
+
+* A version of PRIMME without W = AV saves memory, and it could be cheaper
+  even for GD+k if the matrix is very sparse so that residual and H computation
+  can be done each with a matvec. In case of JDQMR, the additional expense
+  is much smaller (only the outer iteration requires an additional MV).
+  Time could be checked dynamically, but then the space is not saved. 
+  A user defined option would simply set W=null and not allocate this space.
