@@ -15,5 +15,5 @@ void matVecProd(void* x, void* y, int* blockSize, primme_params* primme){
 int main(){
 	
 	// This part I still don't know
-	
+	eig_top( matVecProd, y );
 }
