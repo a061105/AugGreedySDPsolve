@@ -1,5 +1,5 @@
-CC = gcc
-PRIMME_PATH = /Users/teddy/Documents/Work/GITHUB/AugGreedySDPsolve/PRIMME_1.2
+CC = g++
+PRIMME_PATH = ../PRIMME_1.2
 LINKER = ${CC}
 CFLAGS = -O2 -Wall -fPIC -I${PRIMME_PATH}/PRIMMESRC/COMMONSRC
 
@@ -26,7 +26,7 @@ LIBS = -L${PRIMME_PATH} -lprimme
 
 DEFINES = -DF77UNDERSCORE
 # If a C++ compiler is used instead of C add this
-ifeq ($(CC),c++)
+ifeq ($(CC),g++)
 DEFINES = -DF77UNDERSCORE -DCplusplus
 endif     
 
@@ -35,7 +35,7 @@ all: testEig
 testEig: ${OBJS}
 	${LINKER} -o testEig ${OBJS} ${LDFLAGS} ${LIBS}
 
-%.o: %.c
+%.o: %.cpp
 	${CC} -c $< ${CFLAGS} ${DEFINES}
 
 clean:
