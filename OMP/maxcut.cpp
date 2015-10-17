@@ -27,7 +27,6 @@ MaxCutProblem::MaxCutProblem(char* data_file){
     n = 0;
     int node_id_min = numeric_limits<int>::max();
     int node_id_max = numeric_limits<int>::min();
-    int line_num = 0;
     while( !fin.eof()) {
         fin.getline(_line,MAX_LINE);
         string line(_line);
@@ -77,6 +76,12 @@ MaxCutProblem::MaxCutProblem(char* data_file){
             }   
         }
     }
+    for (int i=0;i<C.size();i++){
+        for (SparseVec::iterator vit = C[i]->begin();vit != C[i]->end(); vit++){
+            vit->second = - vit->second;
+        }
+    }
+
     cerr<< nnz <<endl;
     // Form A
     m = n;
@@ -146,7 +151,7 @@ double MaxCutProblem::neg_grad_largest_ev(double* a,double eta, double* new_u){
     /* provide at least following inputs  */
     /* ---------------------------------- */
     primme.n = n;
-    primme.eps = 1e-3;
+    primme.eps = 1e-5;
     primme.numEvals = 1;
     primme.printLevel = 1;
     primme.matrixMatvec = gradVecProd;
@@ -163,7 +168,7 @@ double MaxCutProblem::neg_grad_largest_ev(double* a,double eta, double* new_u){
     /*  Call primme  */
     /* ------------- */
 
-    int ret = dprimme(evals, evecs, rnorms, &primme);
+    dprimme(evals, evecs, rnorms, &primme);
 
     primme_Free(&primme);
     for (int i=0;i<n;i++)

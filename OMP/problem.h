@@ -26,10 +26,10 @@ class Problem{
 	public:
 	int n; // dimensionality
 	int m; // number of constraint
-    
     SparseMat C; // n-by-n matrix C
     SparseMat2* A; // m-by-n-by-n constraint matrices
     double* b;
+
     // not necessary, used in optimization.
 //    double* prob_a;
 //    double prob_eta;

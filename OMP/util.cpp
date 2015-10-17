@@ -33,11 +33,11 @@ double softThd(const double &x,const double  &thd){
 }
 
 
-double l2_norm(double* w, int size){
+double l2_norm_square(double* w, int size){
     double norm=0.0;
     for (int i=0;i<size;i++)
         norm+= w[i] * w[i];
-    return norm/2.0;
+    return norm;
 }
 double maximum(double* values, int size,int &posi){
 	

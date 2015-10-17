@@ -17,18 +17,16 @@ class Param{
 	public:
 	Param(){
 		problem_type = 1;
-		solver = 0;
-		info_file = NULL;
-		max_iter = 1000;
-        lambda = 1.0;
-        epsilon = 1e-3;
+		inner_iter = 30;
+        outer_iter = 100;
+        yt_iter = 100;
+        eta = 0.1;
 	}
 	int problem_type;
-	int solver;
-	char* info_file;
-	int max_iter;
-    double lambda;
-    double epsilon; //termination criterion
+    int inner_iter;
+    int outer_iter;
+    int yt_iter;
+    double eta;
 };
 
 Param param;
@@ -38,6 +36,11 @@ void exit_with_help(){
     cerr << "options:" << endl;
     cerr << "-p problem_type: (default 1)" << endl;
     cerr << "	1 -- max cut" << endl;
+    cerr << "-e eta (default 0.1)" << endl;
+    cerr << "-i number of inner iterations (default 30)" << endl;
+    cerr << "-o number of outer iterations (default 100)" << endl;
+    cerr << "-y number of yt iterations (default 100)" << endl;
+     
     //cerr << "-m max_iter: maximum_outer_iteration (default 100)" << endl;
     //cerr << "-e epsilon: stop criterion (default 1e-6)"<<endl;
     exit(0);
@@ -57,13 +60,13 @@ void parse_command_line(int argc, char** argv, char*& train_file, char*& model_f
 
             case 'p': param.problem_type = atoi(argv[i]);
                       break;
-            case 'i': param.info_file = argv[i];
+            case 'i': param.inner_iter = atoi(argv[i]);
                       break;
-            case 'm': param.max_iter = atoi(argv[i]);
+            case 'o': param.outer_iter = atoi(argv[i]);
                       break;
-            case 'l': param.lambda = atof(argv[i]);
+            case 'y': param.yt_iter = atoi(argv[i]);
                       break;
-            case 'e': param.epsilon = atof(argv[i]);
+            case 'e': param.eta = atof(argv[i]);
                       break;
             default:
                       cerr << "unknown option: -" << argv[i-1][1] << endl;
@@ -82,15 +85,15 @@ void parse_command_line(int argc, char** argv, char*& train_file, char*& model_f
         strcpy(model_file,"model");
 }
 
-void runOMP(Problem* prob){
+void runOMP(Problem* prob, Param param){
     set_prob(prob);
-    double eta = 1e-3;
+    double eta = param.eta;
     int m = prob->m;
     int n = prob->n;
     double* b = prob->b;
-    int inner_iter_max = 30;
-    int outer_iter_max = 10;
-    int yt_iter_max = 1000;
+    int inner_iter_max = param.inner_iter;
+    int outer_iter_max = param.outer_iter;
+    int yt_iter_max = param.yt_iter;
     vector<double> theta;
     vector<double*> B;
     vector<double> c;
@@ -99,11 +102,37 @@ void runOMP(Problem* prob){
     int num_rank1_capacity = 0;
     double* a = new double[m];
     double* y = new double[m];
+   /* 
+    double y0[] = {
+        -0.137135749628878,
+        -0.932595463037164,
+            -0.696818161489900,
+            -0.066000172722062,
+            -0.755463052602466,
+            -0.753876188461246,
+            -0.923024535546483,
+            -0.711524758628472,
+            -0.124270961972165,
+            -0.019880133839796};
+    double y0[] = {
+        -9.350688759773709,
+        -10.476659905165564,
+        -10.106033458265545,
+        -8.245951865763066,
+        -10.178233242802358,
+        -8.590050176232541,
+        -9.524656839317776,
+        -9.320225797143534,
+        -9.093357607129120,
+        -10.395308416191948};
+        */
     for (int i=0;i<m;i++){
-        a[i] = -(b[i] - y[i]/eta);
         y[i] = 0.0;
+        a[i] = -(b[i] - y[i]/eta);
     }
+    double obj;
     double* new_u = new double[n];
+    double* infea = new double[m];
     for (int yt_iter = 0;yt_iter<yt_iter_max;yt_iter++){
         num_rank1 = 0;
         for (int i=0;i<m;i++)
@@ -111,7 +140,7 @@ void runOMP(Problem* prob){
         
         for (int outer_iter= 0;outer_iter<outer_iter_max;outer_iter++){
             double eigenvalue = prob->neg_grad_largest_ev(a,eta,new_u); //largest algebraic eigenvector of the negative gradient
-            if (eigenvalue > 1e-6){
+            if (eigenvalue > 1e-12){
                 double new_c = prob->uCu(new_u);
                 if (num_rank1_capacity == num_rank1){
                     num_rank1++;
@@ -128,17 +157,18 @@ void runOMP(Problem* prob){
                     theta[num_rank1-1] = 1.0;
                     c[num_rank1-1] = new_c;
                 }
-                for (int i=0;i<m;i++)
-                    a[i] += B[num_rank1-1][i];
+                for (int i=0;i<m;i++){
+                    a[i] += theta[num_rank1-1]*B[num_rank1-1][i];
+                }
             }
             vector<int> innerAct;
             for (int i=num_rank1-1;i>=0;i--)
                 innerAct.push_back(i);
             for (int inner_iter=0;inner_iter<inner_iter_max;inner_iter++){
-                random_shuffle(innerAct.begin()+1,innerAct.end());
+                //random_shuffle(innerAct.begin()+1,innerAct.end());
                 for (int k = 0;k<num_rank1;k++){
                     int j = innerAct[k];
-                    double delta_theta = -(eta*dot(a,B[j],m)+c[j])/(eta*l2_norm(B[j],m)*2.0);
+                    double delta_theta = -(eta*dot(a,B[j],m)+c[j])/(eta*l2_norm_square(B[j],m));
                     if (delta_theta > -theta[j]){
                         theta[j] += delta_theta;
                         for (int i=0;i<m;i++)
@@ -151,20 +181,27 @@ void runOMP(Problem* prob){
                     }
                 }
             }
-            double obj = dot(c,theta) + eta * l2_norm(a,m);
             for (int j=0;j<num_rank1;j++){
                 if (fabs(theta[j]) < 1e-12) {
                     theta[j] = theta[num_rank1-1];
+                    double* tmpB = B[j];
                     B[j] = B[num_rank1-1];
+                    B[num_rank1-1] = tmpB;
                     c[j] = c[num_rank1-1];
+                    theta[num_rank1-1] = 0.0;
+                    c[num_rank1-1] = 0.0;
+                    num_rank1--;
                 }
-
             }
-            cerr<<"outer iter="<<outer_iter<<", obj="<<obj<<endl;
+            obj = dot(c,theta) + eta/2.0 * l2_norm_square(a,m);
+           // cerr<<"outer iter="<<outer_iter<<", obj="<<setprecision(10)<<obj<<endl;
         }
+        cerr<<"num_rank1="<<num_rank1<<endl;
+        for (int j=0;j<m;j++)
+            infea[j] = a[j] - y[j]/eta;
+        cerr<<"yt iter="<<yt_iter<<", obj="<<setprecision(10)<<obj<<", infeasibility="<<sqrt(l2_norm_square(infea,m))<<endl;
         for (int i=0;i<m;i++)
             y[i] = eta*a[i];
-
     }
 }
 
@@ -183,6 +220,6 @@ int main(int argc, char** argv){
             break;
     }
     cerr << "dimensionality=" << prob->n <<endl;
-    runOMP(prob);
+    runOMP(prob,param);
 
 }

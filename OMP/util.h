@@ -39,7 +39,7 @@ double l1_norm(vector<double>& w);
 double l1_norm(double *w, vector<int> &actset);
 double dot(double* a, double* b, int size);
 double dot(vector<double>& a, vector<double>& b);
-double l2_norm(double* w,int size);
+double l2_norm_square(double* w,int size);
 void shuffle(vector<int>& arr);
 
 double sign(double v);
