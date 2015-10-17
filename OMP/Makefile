@@ -32,9 +32,11 @@ endif
 
 all:  clean sdp_omp 
 
+sdp_omp: $(PROB_OBJ) omp.o
+	${LINKER} -o sdp_omp ${PROB_OBJ} omp.o ${LDFLAGS} ${LIBS}
 
-sdp_omp: $(PROB_OBJ) omp.cpp
-	$(CC) $(CFLAGS) $(PROB_OBJ)  -c omp.cpp -o sdp_omp  
+omp.o: $(PROB_OBJ) omp.cpp
+	$(CC) $(CFLAGS) $(PROB_OBJ) -c omp.cpp -o omp.o   
 
 maxcut.o: util.o
 	$(CC) $(CFLAGS) ${DEFINES} -c maxcut.cpp -o maxcut.o
