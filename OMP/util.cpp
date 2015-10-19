@@ -32,6 +32,7 @@ double softThd(const double &x,const double  &thd){
 		return 0;
 }
 
+bool sort_pair (const pair<int,double>& a, const pair<int,double>& b) { return (a.first < b.first); }
 
 double l2_norm_square(double* w, int size){
     double norm=0.0;

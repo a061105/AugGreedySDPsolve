@@ -22,12 +22,11 @@ typedef map<int,SparseVec2> SparseMat2;
  */
 
 class Problem{
-	
 	public:
 	int n; // dimensionality
 	int m; // number of constraint
     SparseMat C; // n-by-n matrix C
-    SparseMat2* A; // m-by-n-by-n constraint matrices
+    vector<SparseMat2*> A; // m-by-n-by-n constraint matrices
     double* b;
 
     // not necessary, used in optimization.
@@ -36,12 +35,14 @@ class Problem{
     // eigenpairs of negative gradient. 
     // grad = C + eta*A^*(a)
     // new_u is the eigenvector, and eigenvalue is returned. 
-    virtual double neg_grad_largest_ev(double* a,double eta, double* new_u) = 0;
+    double neg_grad_largest_ev(double* a,double eta, double* new_u);
     // new_uAu = A(new_u new_u^T)
-    virtual void uAu(double* new_u,double* new_uAu) = 0;
+    void uAu(double* new_u,double* new_uAu);
     // return <C,new_u new_U^T>
-    virtual double uCu(double* new_u) = 0;
+    double uCu(double* new_u);
     //virtual void gradVecProd(void* x, void* y, int* blockSize, primme_params* primme) = 0;
 };
 
+void set_prob(Problem *prob); 
+void allocate_prob_a(int m); 
 #endif

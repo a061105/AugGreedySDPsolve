@@ -1,4 +1,4 @@
-#include "maxcut.h"
+#include "lp.h"
 #include <fstream>
 #include <limits>
 #include <algorithm>
@@ -6,16 +6,106 @@
 
 using namespace std;
 
-MaxCutProblem::MaxCutProblem(char* data_file){
+LPProblem::LPProblem(char* data_folder){
     char* _line = new char[MAX_LINE];
     vector<string> tokens;
 
-    ifstream fin(data_file);
-    if (fin.fail()){
-		cerr<< "can't open data file."<<endl;
+    strcat(data_folder,"/c");
+    ifstream c_file(data_folder);
+    if (c_file.fail()){
+		cerr<< "can't open "<<data_folder<<endl;
 		exit(0);
     }
-    n = 0;
+    
+    data_folder[strlen(data_folder)-1] = 'A';
+    ifstream A_file(data_folder);
+    if (A_file.fail()){
+		cerr<< "can't open "<<data_folder<<endl;
+		exit(0);
+    }
+    
+    data_folder[strlen(data_folder)-1] = 'b';
+    ifstream b_file(data_folder);
+    if (b_file.fail()){
+		cerr<< "can't open "<<data_folder<<endl;
+		exit(0);
+    }
+
+    // Processing c file
+    C.clear();
+    int n_raw = 0;
+    while(!c_file.eof()){
+        c_file.getline(_line,MAX_LINE);
+        string line(_line);
+        split(line,"\t",tokens);
+        if (tokens.size()==0)
+            break;
+
+        SparseVec* sv = new SparseVec();
+        sv->push_back(make_pair(n_raw,atof(_line)));
+        C.push_back(sv);
+        n_raw++;
+    }
+    
+    // Processing A
+    A_file.getline(_line,MAX_LINE);
+    
+    A.clear();
+    
+    m = -1;
+    SparseMat2* Ak;// = new SparseMat2();
+    while(!A_file.eof()) {
+        A_file.getline(_line,MAX_LINE);
+        string line(_line);
+        split(line,"\t",tokens);
+        if (tokens.size()<3)
+            break;
+        int ii,jj,vv;
+        ii = atoi(tokens[0].c_str())-1;
+        jj = atoi(tokens[1].c_str())-1;
+        vv = atof(tokens[2].c_str());
+        if (ii > m){
+            Ak = new SparseMat2();
+            A.push_back(Ak);
+            m++;
+        }
+        SparseMat2& Akk = *A[ii];
+        SparseVec2 aa;
+        aa[jj] = vv;
+        Akk[jj] = aa;
+    }
+    m++;
+    n = n_raw + m;
+    for (int i=0;i<m;i++){
+        SparseMat2& Akk = *A[i];
+        Akk[n_raw + i][n_raw + i] = 1.0;
+    }
+    b = new double[m];
+    int bi=0;
+    while(!b_file.eof()){
+        b_file.getline(_line,MAX_LINE);
+        if (bi>=m){
+            break;
+            //cerr<<"b file contains more variables than the number of A's constraints"<<endl;
+            //exit(0);
+        }
+        b[bi] = atof(_line);
+        bi++;
+    }
+    if (bi<m){
+        cerr<<"b file contains less variables than the number of A's constraints"<<endl;
+        exit(0);
+    }
+
+    for (int i=0;i<m;i++){
+        SparseVec* aa = new SparseVec();
+        C.push_back(aa);
+    }
+    A_file.close();
+    b_file.close();
+    c_file.close();
+    allocate_prob_a(m);
+  /* 
     int node_id_min = numeric_limits<int>::max();
     int node_id_max = numeric_limits<int>::min();
     while( !fin.eof()) {
@@ -76,28 +166,20 @@ MaxCutProblem::MaxCutProblem(char* data_file){
     cerr<< nnz <<endl;
     // Form A
     m = n;
-    A.clear();
     
-    for (int k=0;k<m;k++){
-        SparseVec2 aa;
-        aa[k] = 1.0;
-        SparseMat2* Ak = new SparseMat2();
-        Ak->insert(make_pair(k,aa));
-        A.push_back(Ak);
-    }
-  
     // Form b
     b = new double[m];
     for (int i=0;i<m;i++)
         b[i] = 1.0;
     
-    allocate_prob_a(m);
+    prob_a = new double[m];
+*/
 }
 
-
-MaxCutProblem::~MaxCutProblem(){
+LPProblem::~LPProblem(){
     delete b;
     A.clear();
     C.clear();
 }
+
 

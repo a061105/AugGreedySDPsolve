@@ -1,9 +1,9 @@
 CC = g++
 PRIMME_PATH = ../PRIMME_1.2
 LINKER = ${CC}
-CFLAGS = -O3 -Wall -fPIC -I${PRIMME_PATH}/PRIMMESRC/COMMONSRC
+CFLAGS = -O3 -g -Wall -fPIC -I${PRIMME_PATH}/PRIMMESRC/COMMONSRC
 
-PROB_OBJ = maxcut.o util.o 
+PROB_OBJ = maxcut.o util.o problem.o lp.o 
 
 #---------------------------------------------------------------
 #  Basic Link flags for LAPACK/BLAS and math
@@ -40,6 +40,12 @@ omp.o: $(PROB_OBJ) omp.cpp
 
 maxcut.o: util.o
 	$(CC) $(CFLAGS) ${DEFINES} -c maxcut.cpp -o maxcut.o
+
+problem.o: problem.cpp util.o
+	$(CC) $(CFLAGS) ${DEFINES} -c problem.cpp -o problem.o
+
+lp.o: util.o
+	$(CC) $(CFLAGS) ${DEFINES} -c lp.cpp -o lp.o
 
 util.o:
 	$(CC) $(CFLAGS) -c util.cpp -o util.o

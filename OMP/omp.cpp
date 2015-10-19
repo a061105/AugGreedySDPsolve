@@ -10,6 +10,7 @@
 #include <iomanip>  
 #include "problem.h"
 #include "maxcut.h"
+#include "lp.h"
 
 using namespace std;
 
@@ -218,8 +219,16 @@ int main(int argc, char** argv){
             cerr<<"Max Cut"<<endl<<endl;
             prob = new MaxCutProblem(train_file);
             break;
+        
+        case 2:
+            cerr<<"Linear Programming"<<endl<<endl;
+            prob = new LPProblem(train_file);
+            break;
+            
     }
     cerr << "dimensionality=" << prob->n <<endl;
+    cerr << "number of constraints=" << prob->m <<endl;
+    
     runOMP(prob,param);
 
 }
