@@ -103,6 +103,8 @@ void runOMP(Problem* prob, Param param){
     int num_rank1_capacity = 0;
     double* a = new double[m];
     double* y = new double[m];
+    double* old_y = new double[m];
+    
    /* 
     double y0[] = {
         -0.137135749628878,
@@ -129,19 +131,23 @@ void runOMP(Problem* prob, Param param){
         */
     for (int i=0;i<m;i++){
         y[i] = 0.0;
+        old_y[i] = 0.0;
         a[i] = -(b[i] - y[i]/eta);
     }
     double obj;
     double* new_u = new double[n];
     double* infea = new double[m];
     for (int yt_iter = 0;yt_iter<yt_iter_max;yt_iter++){
-        num_rank1 = 0;
-        for (int i=0;i<m;i++)
-            a[i] = -(b[i] - y[i]/eta);
+        //num_rank1 = 0;
+        for (int i=0;i<m;i++){
+            //a[i] = -(b[i] - y[i]/eta);
+            a[i] = a[i] + (y[i]-old_y[i])/eta;
+            old_y[i] = y[i];
+        }
         
         for (int outer_iter= 0;outer_iter<outer_iter_max;outer_iter++){
             double eigenvalue = prob->neg_grad_largest_ev(a,eta,new_u); //largest algebraic eigenvector of the negative gradient
-            if (eigenvalue > 1e-12){
+            if (eigenvalue > 1e-6){
                 double new_c = prob->uCu(new_u);
                 if (num_rank1_capacity == num_rank1){
                     num_rank1++;
@@ -166,7 +172,7 @@ void runOMP(Problem* prob, Param param){
             for (int i=num_rank1-1;i>=0;i--)
                 innerAct.push_back(i);
             for (int inner_iter=0;inner_iter<inner_iter_max;inner_iter++){
-                //random_shuffle(innerAct.begin()+1,innerAct.end());
+                random_shuffle(innerAct.begin()+1,innerAct.end());
                 for (int k = 0;k<num_rank1;k++){
                     int j = innerAct[k];
                     double delta_theta = -(eta*dot(a,B[j],m)+c[j])/(eta*l2_norm_square(B[j],m));
@@ -183,7 +189,7 @@ void runOMP(Problem* prob, Param param){
                 }
             }
             for (int j=0;j<num_rank1;j++){
-                if (fabs(theta[j]) < 1e-12) {
+                if (fabs(theta[j]) < 1e-6) {
                     theta[j] = theta[num_rank1-1];
                     double* tmpB = B[j];
                     B[j] = B[num_rank1-1];
@@ -192,15 +198,20 @@ void runOMP(Problem* prob, Param param){
                     theta[num_rank1-1] = 0.0;
                     c[num_rank1-1] = 0.0;
                     num_rank1--;
+                    j--;
                 }
             }
-            obj = dot(c,theta) + eta/2.0 * l2_norm_square(a,m);
-           // cerr<<"outer iter="<<outer_iter<<", obj="<<setprecision(10)<<obj<<endl;
+            obj = dot(c,theta);// + eta/2.0 * l2_norm_square(a,m);
+            //cerr<<"outer iter="<<outer_iter<<", obj="<<setprecision(10)<<obj<<endl;
         }
         cerr<<"num_rank1="<<num_rank1<<endl;
+        double pinf = sqrt(l2_norm_square(infea,m));
         for (int j=0;j<m;j++)
             infea[j] = a[j] - y[j]/eta;
-        cerr<<"yt iter="<<yt_iter<<", obj="<<setprecision(10)<<obj<<", infeasibility="<<sqrt(l2_norm_square(infea,m))<<endl;
+        cerr<<"yt iter="<<yt_iter<<", obj="<<setprecision(10)<<obj<<", infeasibility="<< pinf <<endl;
+        if( pinf < 0.0008 && yt_iter > 10 )
+            break;
+        
         for (int i=0;i<m;i++)
             y[i] = eta*a[i];
     }

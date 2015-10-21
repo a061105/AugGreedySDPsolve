@@ -60,7 +60,8 @@ LPProblem::LPProblem(char* data_folder){
         split(line,"\t",tokens);
         if (tokens.size()<3)
             break;
-        int ii,jj,vv;
+        int ii,jj;
+        double vv;
         ii = atoi(tokens[0].c_str())-1;
         jj = atoi(tokens[1].c_str())-1;
         vv = atof(tokens[2].c_str());
@@ -105,7 +106,32 @@ LPProblem::LPProblem(char* data_folder){
     b_file.close();
     c_file.close();
     allocate_prob_a(m);
-  /* 
+
+    // output A b c
+    //for (vector<SparseMat2*>::iterator it= A.begin(); it!= A.end();it++){
+    for (int i=0;i<m;i++){//vector<SparseMat2*>::iterator it= A.begin(); it!= A.end();it++){
+        SparseMat2* pit = A[i];
+        cerr<<"a constraint:"<<endl;
+        for (SparseMat2::iterator im = pit->begin(); im != pit->end(); im++){
+            cerr<<im->first<<":: ";
+            for (SparseVec2::iterator iv = im->second.begin();iv!=im->second.end();iv++){
+                cerr<<iv->first<<":"<<iv->second<<" ";
+            }
+            cerr<<endl;
+        }
+        cerr<<endl;
+    }
+    cerr<<"c values"<<endl;
+    for (SparseMat::iterator it = C.begin(); it != C.end(); it++){
+        SparseVec* itt = *it; 
+        for (SparseVec::iterator iv = itt->begin();iv!=itt->end();iv++)
+            cerr<<iv->first<<":"<<iv->second<<" ";
+        cerr<<endl;
+    }
+    cerr<<"b values";
+    for (int i=0;i<m;i++)
+        cerr<<b[i]<<endl;
+    /* 
     int node_id_min = numeric_limits<int>::max();
     int node_id_max = numeric_limits<int>::min();
     while( !fin.eof()) {

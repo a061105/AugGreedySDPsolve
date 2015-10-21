@@ -47,9 +47,9 @@ MaxCutProblem::MaxCutProblem(char* data_file){
             break;
         int node_id0 = atoi(tokens[0].c_str());
         int node_id1 = atoi(tokens[1].c_str());
-        int edge_value = atof(tokens[2].c_str());
-        C[node_id0 - node_id_min]->push_back(make_pair(node_id1-node_id_min,-edge_value));
-        C[node_id1 - node_id_min]->push_back(make_pair(node_id0-node_id_min,-edge_value)); // assume C is symmetric. only one direction is stored in the file.
+        double edge_value = atof(tokens[2].c_str());
+        C[node_id0 - node_id_min]->push_back(make_pair(node_id1-node_id_min,edge_value));
+        C[node_id1 - node_id_min]->push_back(make_pair(node_id0-node_id_min,edge_value)); // assume C is symmetric. only one direction is stored in the file.
         if (node_id0 == node_id1){
             cerr<<"should not contain self-self edge in the file"<<endl;
             cerr<< node_id0<<endl;
@@ -58,7 +58,6 @@ MaxCutProblem::MaxCutProblem(char* data_file){
     int nnz = 0;
     for (int i=0;i<n;i++) {
         nnz += C[i]->size();
-        C[i]->push_back(make_pair(i,C[i]->size()));
         sort(C[i]->begin(), C[i]->end(), sort_pair);
         for (int j=0;j<C[i]->size();j++){
             if ( j<C[i]->size()-1 && C[i]->at(j).first == C[i]->at(j+1).first ){
@@ -67,13 +66,9 @@ MaxCutProblem::MaxCutProblem(char* data_file){
             }   
         }
     }
-    for (int i=0;i<C.size();i++){
-        for (SparseVec::iterator vit = C[i]->begin();vit != C[i]->end(); vit++){
-            vit->second = - vit->second;
-        }
-    }
 
-    cerr<< nnz <<endl;
+    cerr<< "number of edges in max cut problem: "<<nnz <<endl;
+    
     // Form A
     m = n;
     A.clear();

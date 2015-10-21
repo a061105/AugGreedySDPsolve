@@ -60,7 +60,7 @@ double Problem::neg_grad_largest_ev(double* a,double eta, double* new_u){
     /* provide at least following inputs  */
     /* ---------------------------------- */
     primme.n = n;
-    primme.eps = 1e-5;
+    primme.eps = 1e-4;
     primme.numEvals = 1;
     primme.printLevel = 1;
     primme.matrixMatvec = gradVecProd;
