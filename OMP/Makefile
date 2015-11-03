@@ -1,7 +1,7 @@
-CC = g++-4.2
+CC = g++
 PRIMME_PATH = ../PRIMME_1.2
 LINKER = ${CC}
-CFLAGS = -O3 -fopenmp -g -fPIC -I${PRIMME_PATH}/PRIMMESRC/COMMONSRC
+CFLAGS = -O3 -g -fPIC -I${PRIMME_PATH}/PRIMMESRC/COMMONSRC
 
 PROB_OBJ = maxcut.o util.o problem.o lp.o 
 

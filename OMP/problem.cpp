@@ -3,7 +3,6 @@
 #include <limits>
 #include <algorithm>
 #include <iostream>
-#include <omp.h>
 
 using namespace std;
 
