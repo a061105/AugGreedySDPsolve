@@ -1,4 +1,5 @@
 #include<math.h>
+#include <time.h>
 #include<vector>
 #include<cstring>
 #include<stdlib.h>
@@ -37,6 +38,7 @@ void exit_with_help(){
     cerr << "options:" << endl;
     cerr << "-p problem_type: (default 1)" << endl;
     cerr << "	1 -- max cut" << endl;
+    cerr << "	2 -- linear programming" << endl;
     cerr << "-e eta (default 0.1)" << endl;
     cerr << "-i number of inner iterations (default 30)" << endl;
     cerr << "-o number of outer iterations (default 100)" << endl;
@@ -89,6 +91,7 @@ void parse_command_line(int argc, char** argv, char*& train_file, char*& model_f
 void runOMP(Problem* prob, Param param){
     set_prob(prob);
     double eta = param.eta;
+    double epsilon=1e-2;
     int m = prob->m;
     int n = prob->n;
     double* b = prob->b;
@@ -105,38 +108,20 @@ void runOMP(Problem* prob, Param param){
     double* y = new double[m];
     double* old_y = new double[m];
     
-   /* 
-    double y0[] = {
-        -0.137135749628878,
-        -0.932595463037164,
-            -0.696818161489900,
-            -0.066000172722062,
-            -0.755463052602466,
-            -0.753876188461246,
-            -0.923024535546483,
-            -0.711524758628472,
-            -0.124270961972165,
-            -0.019880133839796};
-    double y0[] = {
-        -9.350688759773709,
-        -10.476659905165564,
-        -10.106033458265545,
-        -8.245951865763066,
-        -10.178233242802358,
-        -8.590050176232541,
-        -9.524656839317776,
-        -9.320225797143534,
-        -9.093357607129120,
-        -10.395308416191948};
-        */
     for (int i=0;i<m;i++){
         y[i] = 0.0;
         old_y[i] = 0.0;
         a[i] = -(b[i] - y[i]/eta);
     }
     double obj;
+    double pinf;
     double* new_u = new double[n];
+    for (int i=0;i<n;i++)
+        new_u[i] = 0.0;
     double* infea = new double[m];
+    clock_t tstart = clock();
+    bool apply_non_negative_constraint = true;
+    int phase=1;
     for (int yt_iter = 0;yt_iter<yt_iter_max;yt_iter++){
         //num_rank1 = 0;
         for (int i=0;i<m;i++){
@@ -144,10 +129,10 @@ void runOMP(Problem* prob, Param param){
             a[i] = a[i] + (y[i]-old_y[i])/eta;
             old_y[i] = y[i];
         }
-        
         for (int outer_iter= 0;outer_iter<outer_iter_max;outer_iter++){
-            double eigenvalue = prob->neg_grad_largest_ev(a,eta,new_u); //largest algebraic eigenvector of the negative gradient
-            if (eigenvalue > 1e-6){
+           
+            double eigenvalue = prob->neg_grad_largest_ev(a,eta,epsilon,new_u); //largest algebraic eigenvector of the negative gradient
+            if ( eigenvalue > 1e-8 || outer_iter==0){
                 double new_c = prob->uCu(new_u);
                 if (num_rank1_capacity == num_rank1){
                     num_rank1++;
@@ -168,11 +153,17 @@ void runOMP(Problem* prob, Param param){
                     a[i] += theta[num_rank1-1]*B[num_rank1-1][i];
                 }
             }
+            else {
+                cerr<<"effective outer_iter="<<outer_iter<<endl;
+                cerr<<"eigenvalue="<<eigenvalue<<endl;
+                //break;
+            }
             vector<int> innerAct;
             for (int i=num_rank1-1;i>=0;i--)
                 innerAct.push_back(i);
             for (int inner_iter=0;inner_iter<inner_iter_max;inner_iter++){
-                random_shuffle(innerAct.begin()+1,innerAct.end());
+                if (innerAct.size()>1)
+                    random_shuffle(innerAct.begin()+1,innerAct.end());
                 for (int k = 0;k<num_rank1;k++){
                     int j = innerAct[k];
                     double delta_theta = -(eta*dot(a,B[j],m)+c[j])/(eta*l2_norm_square(B[j],m));
@@ -201,19 +192,31 @@ void runOMP(Problem* prob, Param param){
                     j--;
                 }
             }
-            obj = dot(c,theta);// + eta/2.0 * l2_norm_square(a,m);
+            obj = dot(c,theta) + eta/2.0 * l2_norm_square(a,m);
             //cerr<<"outer iter="<<outer_iter<<", obj="<<setprecision(10)<<obj<<endl;
         }
         cerr<<"num_rank1="<<num_rank1<<endl;
-        double pinf = sqrt(l2_norm_square(infea,m));
         for (int j=0;j<m;j++)
             infea[j] = a[j] - y[j]/eta;
-        cerr<<"yt iter="<<yt_iter<<", obj="<<setprecision(10)<<obj<<", infeasibility="<< pinf <<endl;
-        if( pinf < 0.0008 && yt_iter > 10 )
-            break;
         
+        pinf = inf_norm(infea,m);
+        clock_t t_yt = clock();
+        cerr<<"yt iter="<<yt_iter<<", time="<<((double)(t_yt - tstart))/CLOCKS_PER_SEC<<", obj="<<setprecision(10)<<obj<<", infeasibility="<< pinf <<endl;
+        
+        if( phase==1 && pinf < 5 && yt_iter > 100 ){
+            epsilon = 1e-4;
+            phase=2;
+        }
+        if( phase==2 && pinf < 5e-2 ){
+            epsilon = 1e-8;
+            outer_iter_max = 5;
+            phase = 3;
+        }
+
+        cerr<<"phase " << phase <<endl;
         for (int i=0;i<m;i++)
-            y[i] = eta*a[i];
+            //y[i] = eta*a[i];
+            y[i] += 0.01*eta*(a[i]-y[i]/eta);
     }
 }
 

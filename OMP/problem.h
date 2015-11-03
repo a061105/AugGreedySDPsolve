@@ -35,7 +35,7 @@ class Problem{
     // eigenpairs of negative gradient. 
     // grad = C + eta*A^*(a)
     // new_u is the eigenvector, and eigenvalue is returned. 
-    double neg_grad_largest_ev(double* a,double eta, double* new_u);
+    double neg_grad_largest_ev(double* a,double eta, double epsilon,double* new_u);
     // new_uAu = A(new_u new_u^T)
     void uAu(double* new_u,double* new_uAu);
     // return <C,new_u new_U^T>
@@ -45,4 +45,5 @@ class Problem{
 
 void set_prob(Problem *prob); 
 void allocate_prob_a(int m); 
+
 #endif

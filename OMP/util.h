@@ -40,6 +40,7 @@ double l1_norm(double *w, vector<int> &actset);
 double dot(double* a, double* b, int size);
 double dot(vector<double>& a, vector<double>& b);
 double l2_norm_square(double* w,int size);
+double inf_norm(double* w,int size);
 bool sort_pair (const pair<int,double>& a, const pair<int,double>& b);
 void shuffle(vector<int>& arr);
 

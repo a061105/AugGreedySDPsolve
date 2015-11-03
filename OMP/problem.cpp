@@ -3,6 +3,7 @@
 #include <limits>
 #include <algorithm>
 #include <iostream>
+#include <omp.h>
 
 using namespace std;
 
@@ -42,7 +43,10 @@ void gradVecProd(void* x, void* y, int* blockSize, primme_params* primme){
     
 }
 
-double Problem::neg_grad_largest_ev(double* a,double eta, double* new_u){
+
+double Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,double* new_u){
+    
+    //double start = omp_get_wtime();
     for (int i=0;i<m;i++)
         prob_a[i] = a[i];
     prob_eta = eta;
@@ -60,7 +64,7 @@ double Problem::neg_grad_largest_ev(double* a,double eta, double* new_u){
     /* provide at least following inputs  */
     /* ---------------------------------- */
     primme.n = n;
-    primme.eps = 1e-4;
+    primme.eps = epsilon;
     primme.numEvals = 1;
     primme.printLevel = 1;
     primme.matrixMatvec = gradVecProd;
@@ -72,16 +76,21 @@ double Problem::neg_grad_largest_ev(double* a,double eta, double* new_u){
     evecs = (double *)primme_calloc(
             primme.n*primme.numEvals,sizeof(double), "evecs");
     rnorms = (double *)primme_calloc(primme.numEvals, sizeof(double), "rnorms");
-
+    for(int i=0;i<n;i++)
+        evecs[i] = new_u[i];
     /* ------------- */
     /*  Call primme  */
     /* ------------- */
-
+    //double start2 = omp_get_wtime();
     dprimme(evals, evecs, rnorms, &primme);
-
+    //cerr << "eig solve time=" << omp_get_wtime()-start2 << endl;
+    
     primme_Free(&primme);
     for (int i=0;i<n;i++)
         new_u[i] = evecs[i];
+    
+    //cerr << "whole time=" << omp_get_wtime()-start << endl;
+
     return evals[0];
 }
 

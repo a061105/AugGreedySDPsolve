@@ -57,9 +57,11 @@ MaxCutProblem::MaxCutProblem(char* data_file){
     }
     int nnz = 0;
     for (int i=0;i<n;i++) {
-        nnz += C[i]->size();
+        int innz = C[i]->size();
+        nnz += innz;
+        C[i]->push_back(make_pair(i,-innz));
         sort(C[i]->begin(), C[i]->end(), sort_pair);
-        for (int j=0;j<C[i]->size();j++){
+        for (int j=0;j<C[i]->size()-1;j++){
             if ( j<C[i]->size()-1 && C[i]->at(j).first == C[i]->at(j+1).first ){
                 cerr<<"input file contains symmetric edges (both directions)"<<endl;
                 exit(0);

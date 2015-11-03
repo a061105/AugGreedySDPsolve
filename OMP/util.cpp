@@ -239,3 +239,15 @@ double sign(double v){
 	else
 		return 0.0;
 }
+
+double inf_norm(double* w,int size){
+    
+    double infnorm = -1e300;
+    double val;
+    for(int i=0;i<size;i++){
+        val = fabs(w[i]);
+        if( val > infnorm )
+            infnorm = val;
+    }
+    return infnorm;
+}

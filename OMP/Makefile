@@ -1,7 +1,7 @@
-CC = g++
+CC = g++-4.2
 PRIMME_PATH = ../PRIMME_1.2
 LINKER = ${CC}
-CFLAGS = -O3 -g -Wall -fPIC -I${PRIMME_PATH}/PRIMMESRC/COMMONSRC
+CFLAGS = -O3 -fopenmp -g -fPIC -I${PRIMME_PATH}/PRIMMESRC/COMMONSRC
 
 PROB_OBJ = maxcut.o util.o problem.o lp.o 
 
@@ -33,7 +33,7 @@ endif
 all:  clean sdp_omp 
 
 sdp_omp: $(PROB_OBJ) omp.o
-	${LINKER} -o sdp_omp ${PROB_OBJ} omp.o ${LDFLAGS} ${LIBS}
+	${LINKER} -o sdp_omp ${PROB_OBJ} omp.o  $(CFLAGS) ${LDFLAGS} ${LIBS}
 
 omp.o: $(PROB_OBJ) omp.cpp
 	$(CC) $(CFLAGS) $(PROB_OBJ) -c omp.cpp -o omp.o   
