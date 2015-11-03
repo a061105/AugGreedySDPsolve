@@ -52,3 +52,6 @@ util.o:
 
 clean:
 	rm -f *.o *~ sdp_omp 
+
+test:
+	./sdp_omp -p 1 -e 1 -i 100 -o 1 -y 10000 ./data/G1
