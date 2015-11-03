@@ -65,7 +65,7 @@ double Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,double*
     primme.n = n;
     primme.eps = epsilon;
     primme.numEvals = 1;
-    primme.printLevel = 1;
+    primme.printLevel = 2;
     primme.matrixMatvec = gradVecProd;
     primme_set_method(method, &primme);
     primme.target = primme_largest;

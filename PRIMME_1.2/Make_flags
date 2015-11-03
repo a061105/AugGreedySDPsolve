@@ -7,7 +7,7 @@
 #---------------------------------------------------------------
 
 # Modify this to show the path of the installed PRIMME directory
-TOP = /Users/teddy/Dropbox/Lingfei/MyWork/PRIMME_SVDS/PRIMME_1.2
+#TOP = /Users/teddy/Dropbox/Lingfei/MyWork/PRIMME_SVDS/PRIMME_1.2
 TOP = /Users/teddy/Documents/Work/GITHUB/AugGreedySDPsolve/PRIMME_1.2
 
 # Define the path to the source code
@@ -62,10 +62,10 @@ CFLAGS = -fPIC
 #CFLAGS = -fPIC
 #---------------------------------------------------------------
 
-FFLAGS = -O -fno-second-underscore -m64 -ff2c -fPIC 
-#FFLAGS = -O -fno-second-underscore -fPIC
-LOW_OPT = -g #-O3  
-HIGH_OPT = -g # -O3
+FFLAGS = -O3 -fno-second-underscore -m64 -ff2c -fPIC 
+#FFLAGS = -O3 -fno-second-underscore -fPIC
+LOW_OPT = -O3  
+HIGH_OPT = -O3
 
 #---------------------------------------------------------------
 # Preprocessor definition for using F77 under various OS/compilers
