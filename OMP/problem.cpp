@@ -64,13 +64,8 @@ void Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,int new_k
     /* ---------------------------------- */
     primme.n = n;
     primme.eps = epsilon;
-<<<<<<< HEAD
     primme.numEvals = new_k;
     primme.printLevel = 1;
-=======
->>>>>>> 30a32475ace77c2141989e677be324c774f487b4
-    primme.numEvals = 1;
-    primme.printLevel = 2;
     primme.matrixMatvec = gradVecProd;
     primme.target = primme_largest;
     primme_set_method(method, &primme);
@@ -80,13 +75,8 @@ void Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,int new_k
     evecs = (double *)primme_calloc(
             primme.n*primme.numEvals,sizeof(double), "evecs");
     rnorms = (double *)primme_calloc(primme.numEvals, sizeof(double), "rnorms");
-<<<<<<< HEAD
     for(int i=0;i<primme.n * primme.numEvals;i++)
         evecs[i] = new_us[i];
-=======
->>>>>>> 30a32475ace77c2141989e677be324c774f487b4
-//    for(int i=0;i<n;i++)
-//        evecs[i] = new_u[i];
     /* ------------- */
     /*  Call primme  */
     /* ------------- */
