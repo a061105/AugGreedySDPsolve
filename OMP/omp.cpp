@@ -115,9 +115,16 @@ void runOMP(Problem* prob, Param param){
     }
     double obj;
     double pinf;
+    int new_k = 4;
     double* new_u = new double[n];
     for (int i=0;i<n;i++)
         new_u[i] = 0.0;
+    double* new_us = new double[n*new_k];
+    for (int i=0;i<n*new_k;i++)
+        new_us[i]=0.0;
+    double* new_eigenvalues = new double[new_k];
+    for (int i=0;i<new_k;i++)
+        new_eigenvalues[i]=0.0;
     double* infea = new double[m];
     clock_t tstart = clock();
     bool apply_non_negative_constraint = true;
@@ -130,34 +137,36 @@ void runOMP(Problem* prob, Param param){
             old_y[i] = y[i];
         }
         for (int outer_iter= 0;outer_iter<outer_iter_max;outer_iter++){
-           
-            double eigenvalue = prob->neg_grad_largest_ev(a,eta,epsilon,new_u); //largest algebraic eigenvector of the negative gradient
-            if ( eigenvalue > 1e-8 || outer_iter==0){
-                double new_c = prob->uCu(new_u);
-                if (num_rank1_capacity == num_rank1){
-                    num_rank1++;
-                    num_rank1_capacity++;
-                    double* new_uAu = new double[m];
-                    prob->uAu(new_u,new_uAu);
-                    theta.push_back(1.0);
-                    B.push_back(new_uAu);
-                    c.push_back(new_c);
-                }
-                else {
-                    num_rank1++;
-                    prob->uAu(new_u,B[num_rank1-1]);
-                    theta[num_rank1-1] = 1.0;
-                    c[num_rank1-1] = new_c;
-                }
-                for (int i=0;i<m;i++){
-                    a[i] += theta[num_rank1-1]*B[num_rank1-1][i];
+          
+            prob->neg_grad_largest_ev(a,eta,epsilon,new_k,new_us,new_eigenvalues); //largest algebraic eigenvector of the negative gradient
+            int real_new_k= 0;
+            for (int j = 0;j < new_k;j++){
+                double eigenvalue = new_eigenvalues[j];
+                new_u = new_us + j*n;
+                if ( eigenvalue > 1e-8 || outer_iter==0){
+                    real_new_k ++;
+                    double new_c = prob->uCu(new_u);
+                    if (num_rank1_capacity == num_rank1){
+                        num_rank1++;
+                        num_rank1_capacity++;
+                        double* new_uAu = new double[m];
+                        prob->uAu(new_u, new_uAu);
+                        theta.push_back(1.0);
+                        B.push_back(new_uAu);
+                        c.push_back(new_c);
+                    }
+                    else {
+                        num_rank1++;
+                        prob->uAu(new_u,B[num_rank1-1]);
+                        theta[num_rank1-1] = 1.0;
+                        c[num_rank1-1] = new_c;
+                    }
+                    for (int i=0;i<m;i++){
+                        a[i] += theta[num_rank1-1]*B[num_rank1-1][i];
+                    }
                 }
             }
-            else {
-                cerr<<"effective outer_iter="<<outer_iter<<endl;
-                cerr<<"eigenvalue="<<eigenvalue<<endl;
-                //break;
-            }
+            cerr<<"real_new_k="<<real_new_k<<endl;
             vector<int> innerAct;
             for (int i=num_rank1-1;i>=0;i--)
                 innerAct.push_back(i);
@@ -192,10 +201,9 @@ void runOMP(Problem* prob, Param param){
                     j--;
                 }
             }
-            obj = dot(c,theta) + eta/2.0 * l2_norm_square(a,m);
+            obj = dot(c,theta);// + eta/2.0 * l2_norm_square(a,m);
             //cerr<<"outer iter="<<outer_iter<<", obj="<<setprecision(10)<<obj<<endl;
         }
-        cerr<<"num_rank1="<<num_rank1<<endl;
         for (int j=0;j<m;j++)
             infea[j] = a[j] - y[j]/eta;
         
@@ -208,12 +216,14 @@ void runOMP(Problem* prob, Param param){
             phase=2;
         }
         if( phase==2 && pinf < 5e-2 ){
-            epsilon = 1e-8;
-            outer_iter_max = 5;
+            //epsilon = 1e-8;
+            //outer_iter_max = 5;
             phase = 3;
         }
 
-        cerr<<"phase " << phase <<endl;
+        if (pinf<0.05)
+            exit(0);
+        cerr<<"phase " << phase <<" num_rank1="<<num_rank1<<endl;
         for (int i=0;i<m;i++)
             //y[i] = eta*a[i];
             y[i] += 0.01*eta*(a[i]-y[i]/eta);

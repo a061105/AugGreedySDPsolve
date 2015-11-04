@@ -43,7 +43,7 @@ void gradVecProd(void* x, void* y, int* blockSize, primme_params* primme){
 }
 
 
-double Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,double* new_u){
+void Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,int new_k,double* new_us, double* new_eigenvalues){
     
     //double start = omp_get_wtime();
     for (int i=0;i<m;i++)
@@ -64,7 +64,7 @@ double Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,double*
     /* ---------------------------------- */
     primme.n = n;
     primme.eps = epsilon;
-    primme.numEvals = 1;
+    primme.numEvals = new_k;
     primme.printLevel = 1;
     primme.matrixMatvec = gradVecProd;
     primme_set_method(method, &primme);
@@ -75,22 +75,25 @@ double Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,double*
     evecs = (double *)primme_calloc(
             primme.n*primme.numEvals,sizeof(double), "evecs");
     rnorms = (double *)primme_calloc(primme.numEvals, sizeof(double), "rnorms");
-    for(int i=0;i<n;i++)
-        evecs[i] = new_u[i];
+    for(int i=0;i<primme.n * primme.numEvals;i++)
+        evecs[i] = new_us[i];
     /* ------------- */
     /*  Call primme  */
     /* ------------- */
     //double start2 = omp_get_wtime();
+    cerr<<"start dprimme"<<endl;
     dprimme(evals, evecs, rnorms, &primme);
+    cerr<<"end dprimme"<<endl;
     //cerr << "eig solve time=" << omp_get_wtime()-start2 << endl;
     
     primme_Free(&primme);
-    for (int i=0;i<n;i++)
-        new_u[i] = evecs[i];
-    
-    //cerr << "whole time=" << omp_get_wtime()-start << endl;
+    for (int i=0;i < primme.n * primme.numEvals;i++)
+        new_us[i] = evecs[i];
+    for (int i=0;i<primme.numEvals;i++){
+        new_eigenvalues[i] = evals[i];
+    }
 
-    return evals[0];
+    //cerr << "whole time=" << omp_get_wtime()-start << endl;
 }
 
 void Problem::uAu(double* new_u,double* new_uAu){
