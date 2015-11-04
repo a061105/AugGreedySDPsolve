@@ -56,7 +56,7 @@ void Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,int new_k
     /* ----------------------------- */
     primme_params primme;
     primme_preset_method method;
-    method = DYNAMIC;
+    method = JDQMR_ETol;
     primme_initialize(&primme);
 
     /* ---------------------------------- */
@@ -66,9 +66,11 @@ void Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,int new_k
     primme.eps = epsilon;
     primme.numEvals = new_k;
     primme.printLevel = 1;
+    primme.numEvals = 1;
+    primme.printLevel = 2;
     primme.matrixMatvec = gradVecProd;
-    primme_set_method(method, &primme);
     primme.target = primme_largest;
+    primme_set_method(method, &primme);
 
     /* Allocate space for converged Ritz values and residual norms */
     evals = (double *)primme_calloc(primme.numEvals, sizeof(double), "evals");
@@ -77,6 +79,8 @@ void Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,int new_k
     rnorms = (double *)primme_calloc(primme.numEvals, sizeof(double), "rnorms");
     for(int i=0;i<primme.n * primme.numEvals;i++)
         evecs[i] = new_us[i];
+//    for(int i=0;i<n;i++)
+//        evecs[i] = new_u[i];
     /* ------------- */
     /*  Call primme  */
     /* ------------- */
