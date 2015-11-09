@@ -12,7 +12,6 @@ extern "C"
 /* wtime.h header file is included so primme's timimg functions can be used */
 #include "wtime.h"
 }
-
 // multiply to an Identity Matrix
 void matVecProd(void* x, void* y, int* blockSize, primme_params* primme){
 	
@@ -20,7 +19,7 @@ void matVecProd(void* x, void* y, int* blockSize, primme_params* primme){
 	double* yv = (double*)y;
 	int n = primme->n;
 	for(int i=0;i<n;i++){
-		yv[i] = xv[i];
+		yv[i] = i*xv[i];
 	}
 }
 
@@ -43,7 +42,7 @@ int main(){
    /* ---------------------------------- */
    /* provide at least following inputs  */
    /* ---------------------------------- */
-   primme.n = 1e4;
+   primme.n = 10;
    primme.eps = 1e-3;
    primme.numEvals = 5;
    primme.printLevel = 2;
@@ -62,9 +61,13 @@ int main(){
 
    wt1 = primme_get_wtime(); 
    primme_get_time(&ut1,&st1);
-
    ret = dprimme(evals, evecs, rnorms, &primme);
 
+   for (int t=0;t<primme.numEvals;t++){
+       for (int j=0;j<primme.n;j++) 
+           printf("%f ", evecs[t*primme.n+j]);
+       printf("\n");
+   }
    wt2 = primme_get_wtime();
    primme_get_time(&ut2,&st2);
 

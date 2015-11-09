@@ -9,6 +9,7 @@
 #include<deque>
 #include <ctime>
 #include <iomanip>  
+#include <algorithm>
 #include "problem.h"
 #include "maxcut.h"
 #include "lp.h"
