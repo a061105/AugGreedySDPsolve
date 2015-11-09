@@ -54,4 +54,4 @@ clean:
 	rm -f *.o *~ sdp_omp 
 
 test:
-	./sdp_omp -p 1 -e 1 -i 100 -o 1 -y 10000 ./data/G1
+	./sdp_omp -p 1 -e 10 -i 10 -o 1 -y 10000 ./data/G1

@@ -113,9 +113,8 @@ void runOMP(Problem* prob, Param param){
         old_y[i] = 0.0;
         a[i] = -(b[i] - y[i]/eta);
     }
-    double obj;
-    double pinf;
-    int new_k = 4;
+    double obj, dobj, pinf, dinf;
+    int new_k = 10;
     double* new_u = new double[n];
     for (int i=0;i<n;i++)
         new_u[i] = 0.0;
@@ -125,10 +124,17 @@ void runOMP(Problem* prob, Param param){
     double* new_eigenvalues = new double[new_k];
     for (int i=0;i<new_k;i++)
         new_eigenvalues[i]=0.0;
-    double* infea = new double[m];
+    double* pinfea = new double[m];
+    double b_inf = inf_norm(b,m);
+    prob->neg_grad_largest_ev(a,0.0,1e-8,new_k,new_us,new_eigenvalues,0); 
+    double C_spectral = fabs(new_eigenvalues[0]);
+    prob->neg_grad_largest_ev(a,0.0,1e-8,new_k,new_us,new_eigenvalues,1);
+    C_spectral = max(fabs(new_eigenvalues[0]),C_spectral);
+    
     clock_t tstart = clock();
     bool apply_non_negative_constraint = true;
-    int phase=1;
+    int phase = 1;
+    
     for (int yt_iter = 0;yt_iter<yt_iter_max;yt_iter++){
         //num_rank1 = 0;
         for (int i=0;i<m;i++){
@@ -137,14 +143,18 @@ void runOMP(Problem* prob, Param param){
             old_y[i] = y[i];
         }
         for (int outer_iter= 0;outer_iter<outer_iter_max;outer_iter++){
-          
-            prob->neg_grad_largest_ev(a,eta,epsilon,new_k,new_us,new_eigenvalues); //largest algebraic eigenvector of the negative gradient
-            int real_new_k= 0;
+            int real_new_k=0;
+            // obtain new greedy coordinates (rank 1 matrices)
+            double t_eig = 0.0;
+            clock_t t1 = clock();
+            prob->neg_grad_largest_ev(a,eta,epsilon,new_k,new_us,new_eigenvalues,1); //largest algebraic eigenvector of the negative gradient
+            t_eig += ((double)(clock() - t1))/CLOCKS_PER_SEC;
+            // push new coordinates into active set if the corresponding eigenvalue is greater than 1e-8
+            cerr<<"time of eig " <<t_eig<<endl;
             for (int j = 0;j < new_k;j++){
                 double eigenvalue = new_eigenvalues[j];
                 new_u = new_us + j*n;
                 if ( eigenvalue > 1e-8 || outer_iter==0){
-                    real_new_k ++;
                     double new_c = prob->uCu(new_u);
                     if (num_rank1_capacity == num_rank1){
                         num_rank1++;
@@ -164,15 +174,21 @@ void runOMP(Problem* prob, Param param){
                     for (int i=0;i<m;i++){
                         a[i] += theta[num_rank1-1]*B[num_rank1-1][i];
                     }
+                    real_new_k++;
                 }
             }
-            cerr<<"real_new_k="<<real_new_k<<endl;
+
+            // fully corrective update for the coefficients of coordinates, theta
             vector<int> innerAct;
             for (int i=num_rank1-1;i>=0;i--)
                 innerAct.push_back(i);
             for (int inner_iter=0;inner_iter<inner_iter_max;inner_iter++){
-                if (innerAct.size()>1)
-                    random_shuffle(innerAct.begin()+1,innerAct.end());
+                if (inner_iter==0 && innerAct.size()>1){
+                    random_shuffle(innerAct.begin()+real_new_k,innerAct.end()); // always update the newly added coordinates 
+                }
+                else {
+                    random_shuffle(innerAct.begin(),innerAct.end());
+                }
                 for (int k = 0;k<num_rank1;k++){
                     int j = innerAct[k];
                     double delta_theta = -(eta*dot(a,B[j],m)+c[j])/(eta*l2_norm_square(B[j],m));
@@ -188,6 +204,7 @@ void runOMP(Problem* prob, Param param){
                     }
                 }
             }
+            // remove the coordinates with zero (<1e-6) coefficient from active set
             for (int j=0;j<num_rank1;j++){
                 if (fabs(theta[j]) < 1e-6) {
                     theta[j] = theta[num_rank1-1];
@@ -202,31 +219,41 @@ void runOMP(Problem* prob, Param param){
                 }
             }
             obj = dot(c,theta);// + eta/2.0 * l2_norm_square(a,m);
-            //cerr<<"outer iter="<<outer_iter<<", obj="<<setprecision(10)<<obj<<endl;
         }
+        // calculate infeasibilities
         for (int j=0;j<m;j++)
-            infea[j] = a[j] - y[j]/eta;
+            pinfea[j] = a[j] - y[j]/eta;
+        // pinf = inf_norm(pinfea,m);
+        pinf = inf_norm(pinfea,m)/(1.0+b_inf);
         
-        pinf = inf_norm(infea,m);
+        prob->neg_grad_largest_ev(y,1.0,1e-8,new_k,new_us,new_eigenvalues,1);
+        if (new_eigenvalues[0]>0)
+            dinf = new_eigenvalues[0]/(C_spectral+1);
+        else
+            dinf = 0.0;
+        dobj = -dot(y,b,m);    
+        double objinf = fabs(dobj-obj)/(1+fabs(dobj)+fabs(obj));
         clock_t t_yt = clock();
-        cerr<<"yt iter="<<yt_iter<<", time="<<((double)(t_yt - tstart))/CLOCKS_PER_SEC<<", obj="<<setprecision(10)<<obj<<", infeasibility="<< pinf <<endl;
+        cerr<<"yt iter="<<yt_iter<<", t="<<((double)(t_yt - tstart))/CLOCKS_PER_SEC<<", obj="<<setprecision(10)<<obj<<", dobj="<<dobj<<", pinf="<< pinf <<", dinf="<<dinf<<", objInf="<<objinf<<endl;
         
+        // change phases
+        // phase=1: starting phase, when infeasiblities are large, so no need to solve eigenvalue problem very accurately. use large epsilon
+        // phase=2: try to decrease infeasiblity to small values. use small epsilon
         if( phase==1 && pinf < 5 && yt_iter > 100 ){
             epsilon = 1e-4;
             phase=2;
         }
-        if( phase==2 && pinf < 5e-2 ){
-            //epsilon = 1e-8;
+        if( phase==2 && dinf < 1e-3 ){
+            //epsilon = 1e-6;
             //outer_iter_max = 5;
             phase = 3;
         }
 
-        if (pinf<0.05)
-            exit(0);
+        //if (pinf<0.05)
+            // exit(0);
         cerr<<"phase " << phase <<" num_rank1="<<num_rank1<<endl;
         for (int i=0;i<m;i++)
-            //y[i] = eta*a[i];
-            y[i] += 0.01*eta*(a[i]-y[i]/eta);
+            y[i] += 0.1*eta*(a[i]-y[i]/eta);
     }
 }
 

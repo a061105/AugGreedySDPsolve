@@ -43,7 +43,7 @@ void gradVecProd(void* x, void* y, int* blockSize, primme_params* primme){
 }
 
 
-void Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,int new_k,double* new_us, double* new_eigenvalues){
+void Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,int new_k,double* new_us, double* new_eigenvalues,int is_largest_eig){
     
     //double start = omp_get_wtime();
     for (int i=0;i<m;i++)
@@ -67,7 +67,15 @@ void Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,int new_k
     primme.numEvals = new_k;
     primme.printLevel = 1;
     primme.matrixMatvec = gradVecProd;
-    primme.target = primme_largest;
+    if (is_largest_eig==1){
+        primme.target = primme_largest;
+    }
+    else if (is_largest_eig==0){
+        primme.target = primme_smallest;
+    }
+    else {
+        cerr<<"please specify 1 or 0 for is_largest_eig. 1: largest eigenvalue, 0: smallest eigenvalue"<<endl;
+    }
     primme_set_method(method, &primme);
 
     /* Allocate space for converged Ritz values and residual norms */
@@ -81,9 +89,7 @@ void Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,int new_k
     /*  Call primme  */
     /* ------------- */
     //double start2 = omp_get_wtime();
-    cerr<<"start dprimme"<<endl;
     dprimme(evals, evecs, rnorms, &primme);
-    cerr<<"end dprimme"<<endl;
     //cerr << "eig solve time=" << omp_get_wtime()-start2 << endl;
     
     primme_Free(&primme);
