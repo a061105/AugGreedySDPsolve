@@ -10,7 +10,8 @@ PROB_OBJ = maxcut.o util.o problem.o lp.o
 #---------------------------------------------------------------
 # Mac OSX 10.4 using veclib for BLAS/LAPACK
 #
-LDFLAGS = -Wl,-framework -Wl,vecLib -m64
+#LDFLAGS = -Wl,-framework -Wl,vecLib -m64
+LDFLAGS = -Wl,-framework -Wl,Accelerate -m64
 # Use -Wl,-framework -Wl,Accelerate -m64 for Mac OS X 10.3
 LIBS = -L${PRIMME_PATH} -lprimme
 #---------------------------------------------------------------
