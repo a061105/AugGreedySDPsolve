@@ -1,0 +1,402 @@
+unknown option: -s
+Max Cut
+
+800 node id 1
+number of edges in max cut problem: 38352
+dimensionality=800
+number of constraints=800
+real_new_k=5
+step size=1
+yt iter=0, t=0.128624, num_rank1=5, eta=100, obj=-1640.281616, dobj=-48166.03846, pinf=0.4437008627, dinf=0.01535537568, Gap=0.9341148404
+phase 1, num_rank1=5, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=1, t=0.382404, num_rank1=10, eta=100, obj=-48310.38928, dobj=-48339.78298, pinf=0.0233774526, dinf=0.003478626709, Gap=0.000304121426
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=2, t=0.580802, num_rank1=10, eta=100, obj=-48323.08906, dobj=-48329.32891, pinf=0.005440169035, dinf=0.002791796064, Gap=6.455897727e-05
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=3, t=0.786107, num_rank1=10, eta=100, obj=-48329.8194, dobj=-48329.0257, pinf=0.0003806170789, dinf=0.00284945947, Gap=8.211301089e-06
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=4, t=1.091576, num_rank1=14, eta=100, obj=-48328.38776, dobj=-48330.91699, pinf=0.004390831301, dinf=0.001903938221, Gap=2.616615381e-05
+phase 1, num_rank1=14, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=5, t=1.478948, num_rank1=18, eta=100, obj=-48330.60644, dobj=-48331.68278, pinf=0.003375364874, dinf=0.0006758110266, Gap=1.113501254e-05
+phase 1, num_rank1=18, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=6, t=1.913815, num_rank1=18, eta=100, obj=-48333.45594, dobj=-48332.76053, pinf=0.001050462849, dinf=1.130146184e-05, Gap=7.193919555e-06
+phase 1, num_rank1=18, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=7, t=2.200731, num_rank1=18, eta=100, obj=-48332.71087, dobj=-48332.79551, pinf=3.586236743e-05, dinf=2.414871504e-06, Gap=8.755911216e-07
+unknown option: -s
+Max Cut
+
+6399 node id 0
+number of edges in max cut problem: 25600
+dimensionality=6400
+number of constraints=6400
+real_new_k=5
+step size=1
+yt iter=0, t=0.926098, num_rank1=5, eta=100, obj=-7524.679799, dobj=-358077.8104, pinf=1.700042495, dinf=0.01541069358, Gap=0.9588342015
+phase 1, num_rank1=5, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=1, t=3.141516, num_rank1=10, eta=100, obj=-430284.5844, dobj=-355157.3928, pinf=0.1635347191, dinf=0.0009134933016, Gap=0.09564945355
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=2, t=4.978756, num_rank1=10, eta=100, obj=-365397.7528, dobj=-355207.7392, pinf=0.06624186721, dinf=0.0001951998751, Gap=0.01414088509
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=3, t=6.831781, num_rank1=10, eta=100, obj=-357838.6264, dobj=-355258.7387, pinf=0.03720394408, dinf=5.372711669e-05, Gap=0.003617856698
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=4, t=9.314194, num_rank1=11, eta=100, obj=-356015.096, dobj=-355126.2809, pinf=0.02548431703, dinf=5.86086902e-05, Gap=0.001249841179
+phase 1, num_rank1=11, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=5, t=12.147106, num_rank1=10, eta=100, obj=-355476.1553, dobj=-355066.4903, pinf=0.01515022378, dinf=7.367088743e-05, Gap=0.000576551419
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=6, t=14.858657, num_rank1=13, eta=100, obj=-355275.3545, dobj=-355074.0835, pinf=0.008054282109, dinf=6.7910084e-05, Gap=0.0002833404306
+phase 1, num_rank1=13, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=7, t=18.298812, num_rank1=13, eta=100, obj=-355175.5845, dobj=-355132.1984, pinf=0.008381815826, dinf=1.109759395e-05, Gap=6.108059747e-05
+phase 1, num_rank1=13, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=8, t=22.690054, num_rank1=17, eta=100, obj=-355101.1471, dobj=-355085.9961, pinf=0.00202906487, dinf=5.690311682e-05, Gap=2.133376682e-05
+phase 1, num_rank1=17, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=9, t=27.329267, num_rank1=17, eta=100, obj=-355108.4405, dobj=-355093.2834, pinf=0.00157315001, dinf=3.316953246e-05, Gap=2.134203501e-05
+phase 1, num_rank1=17, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=10, t=31.21141, num_rank1=14, eta=100, obj=-355095.0838, dobj=-355093.6244, pinf=0.001452773806, dinf=3.066547671e-05, Gap=2.054883153e-06
+phase 1, num_rank1=14, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=11, t=36.249518, num_rank1=16, eta=100, obj=-354845.4629, dobj=-355106.3917, pinf=0.003088254165, dinf=1.56721589e-05, Gap=0.0003675296801
+phase 1, num_rank1=16, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=12, t=38.693924, num_rank1=15, eta=100, obj=-355078.4893, dobj=-355098.0139, pinf=0.002358637009, dinf=5.050293112e-05, Gap=2.749248168e-05
+phase 1, num_rank1=15, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=13, t=42.096294, num_rank1=14, eta=100, obj=-355088.1011, dobj=-355098.7974, pinf=0.001273814091, dinf=1.444873562e-05, Gap=1.506135108e-05
+phase 1, num_rank1=14, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=14, t=46.312067, num_rank1=16, eta=100, obj=-355106.7047, dobj=-355096.5413, pinf=0.003144571996, dinf=2.181683057e-05, Gap=1.431048612e-05
+phase 1, num_rank1=16, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=15, t=49.260882, num_rank1=18, eta=100, obj=-355030.1695, dobj=-355101.0802, pinf=0.001205765368, dinf=2.473440175e-05, Gap=9.985565625e-05
+phase 1, num_rank1=18, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=16, t=51.545776, num_rank1=15, eta=100, obj=-355086.8505, dobj=-355107.2672, pinf=0.002063399722, dinf=4.411148274e-05, Gap=2.874801428e-05
+phase 1, num_rank1=15, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=17, t=55.119092, num_rank1=16, eta=100, obj=-355095.2381, dobj=-355092.4629, pinf=0.001487035615, dinf=3.033208519e-05, Gap=3.907635075e-06
+phase 1, num_rank1=16, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=18, t=57.550378, num_rank1=14, eta=100, obj=-355095.0527, dobj=-355080.9266, pinf=0.002353998029, dinf=4.837147304e-05, Gap=1.989085947e-05
+phase 1, num_rank1=14, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=19, t=61.416358, num_rank1=16, eta=100, obj=-355109.1114, dobj=-355094.741, pinf=0.001575291016, dinf=1.252931418e-05, Gap=2.023418305e-05
+phase 1, num_rank1=16, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=20, t=63.454168, num_rank1=12, eta=100, obj=-355093.0046, dobj=-355090.9805, pinf=0.001919750311, dinf=4.10829714e-05, Gap=2.850167132e-06
+phase 1, num_rank1=12, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=21, t=66.129694, num_rank1=14, eta=100, obj=-351221.7144, dobj=-355093.0776, pinf=0.001517328731, dinf=2.867740307e-05, Gap=0.005481065533
+phase 1, num_rank1=14, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=22, t=68.966206, num_rank1=10, eta=100, obj=-355141.0508, dobj=-355095.2498, pinf=0.001026676411, dinf=1.243853802e-05, Gap=6.448688947e-05
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=23, t=70.726729, num_rank1=10, eta=100, obj=-355094.3338, dobj=-355099.3188, pinf=0.00121535009, dinf=4.534710888e-05, Gap=7.019263271e-06
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=24, t=76.514496, num_rank1=15, eta=100, obj=-355091.3578, dobj=-355095.8799, pinf=0.001644929839, dinf=1.11720849e-05, Gap=6.367496295e-06
+phase 1, num_rank1=15, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=25, t=81.708766, num_rank1=14, eta=100, obj=-355097.0385, dobj=-355096.2226, pinf=0.0004457176506, dinf=1.040142509e-05, Gap=1.148751878e-06
+unknown option: -s
+Max Cut
+
+7000 node id 1
+number of edges in max cut problem: 34296
+dimensionality=7000
+number of constraints=7000
+real_new_k=5
+step size=1
+yt iter=0, t=0.863494, num_rank1=5, eta=100, obj=-174.0046589, dobj=-61456.15852, pinf=0.2001724529, dinf=0.03558345644, Gap=0.9943371291
+phase 1, num_rank1=5, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=1, t=2.784482, num_rank1=10, eta=100, obj=-60535.08559, dobj=-60717.66865, pinf=0.06926804757, dinf=0.0119964369, Gap=0.001505793069
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=2, t=5.484112, num_rank1=15, eta=100, obj=-60469.41774, dobj=-60386.86908, pinf=0.02314119482, dinf=0.0107085994, Gap=0.0006830259666
+phase 1, num_rank1=15, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=3, t=7.227504, num_rank1=10, eta=100, obj=-60750.63902, dobj=-60859.25911, pinf=0.01549515224, dinf=0.004632619497, Gap=0.0008931772678
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=4, t=9.07569, num_rank1=10, eta=100, obj=-60764.40157, dobj=-60784.49542, pinf=0.006997361856, dinf=0.005187835608, Gap=0.0001653136009
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=5, t=11.700688, num_rank1=15, eta=100, obj=-60791.28292, dobj=-60937.39546, pinf=0.005831802929, dinf=0.004707250061, Gap=0.001200303374
+phase 1, num_rank1=15, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=6, t=15.134189, num_rank1=19, eta=100, obj=-60813.78036, dobj=-61088.84386, pinf=0.009395770938, dinf=0.000249215425, Gap=0.002256401283
+phase 1, num_rank1=19, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=7, t=18.716583, num_rank1=18, eta=100, obj=-60843.17708, dobj=-60931.1997, pinf=0.005219644624, dinf=0.001048118469, Gap=0.0007228277393
+phase 1, num_rank1=18, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=8, t=21.851413, num_rank1=18, eta=100, obj=-60870.73018, dobj=-60867.50374, pinf=0.003456596505, dinf=0.001481199085, Gap=2.650290807e-05
+phase 1, num_rank1=18, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=9, t=25.735049, num_rank1=22, eta=100, obj=-60885.47221, dobj=-60900.79841, pinf=0.003969116039, dinf=0.001035692289, Gap=0.0001258440513
+phase 1, num_rank1=22, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=10, t=30.404026, num_rank1=26, eta=100, obj=-60883.82265, dobj=-60901.52047, pinf=0.001593881044, dinf=0.0005634805462, Gap=0.0001453186332
+phase 1, num_rank1=26, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=11, t=35.644437, num_rank1=26, eta=100, obj=-60885.56355, dobj=-60892.57896, pinf=0.001967360979, dinf=0.0006193100704, Gap=5.760769022e-05
+phase 1, num_rank1=26, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=12, t=40.831584, num_rank1=29, eta=100, obj=-60887.01001, dobj=-60963.33971, pinf=0.00450397203, dinf=0.0001682236137, Gap=0.0006264165062
+phase 1, num_rank1=29, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=13, t=45.79519, num_rank1=23, eta=100, obj=-60882.15907, dobj=-60870.36146, pinf=0.00322251098, dinf=0.0004805124039, Gap=9.689746089e-05
+phase 1, num_rank1=23, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=14, t=50.713083, num_rank1=27, eta=100, obj=-60886.33263, dobj=-60898.73089, pinf=0.001073454096, dinf=0.0003306005067, Gap=0.0001018035682
+phase 1, num_rank1=27, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=15, t=54.959606, num_rank1=26, eta=100, obj=-60887.79374, dobj=-60888.51797, pinf=0.001059154382, dinf=0.0002148095345, Gap=5.947157134e-06
+phase 1, num_rank1=26, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=16, t=59.22366, num_rank1=25, eta=100, obj=-60886.26158, dobj=-60888.07479, pinf=0.0002460134658, dinf=0.0002691450795, Gap=1.488981622e-05
+unknown option: -s
+Max Cut
+
+20000 node id 1
+number of edges in max cut problem: 80000
+dimensionality=20000
+number of constraints=20000
+real_new_k=5
+step size=1
+yt iter=0, t=4.06561, num_rank1=5, eta=100, obj=-220.5948495, dobj=-63811.6934, pinf=0.06569248831, dinf=0.500621287, Gap=0.9930943778
+phase 1, num_rank1=5, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=1, t=10.765788, num_rank1=10, eta=100, obj=-61145.02516, dobj=-59784.41014, pinf=0.04318519553, dinf=0.2164061106, Gap=0.01125122075
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=2, t=16.548036, num_rank1=11, eta=100, obj=-62376.2534, dobj=-62608.91431, pinf=0.03530971842, dinf=0.3119764132, Gap=0.00186149322
+phase 1, num_rank1=11, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=3, t=22.776217, num_rank1=11, eta=100, obj=-62468.24656, dobj=-62426.005, pinf=0.02550266288, dinf=0.009600988554, Gap=0.0003382158886
+phase 1, num_rank1=11, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=4, t=27.886595, num_rank1=9, eta=100, obj=-62545.00421, dobj=-62701.94975, pinf=0.008889769483, dinf=0.003806538368, Gap=0.001253078681
+phase 1, num_rank1=9, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=5, t=34.51768, num_rank1=10, eta=100, obj=-62558.28201, dobj=-62455.17068, pinf=0.002709519742, dinf=0.01034690087, Gap=0.0008247952932
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=6, t=40.226214, num_rank1=8, eta=100, obj=-62580.31169, dobj=-62856.10643, pinf=0.002797907245, dinf=0.0008912116762, Gap=0.002198664037
+phase 1, num_rank1=8, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=7, t=46.718148, num_rank1=7, eta=100, obj=-62576.02459, dobj=-62750.61885, pinf=0.002408527016, dinf=0.001220539012, Gap=0.001393102528
+phase 1, num_rank1=7, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=8, t=50.293369, num_rank1=6, eta=100, obj=-62472.32152, dobj=-62569.66058, pinf=0.002718429288, dinf=0.006422883046, Gap=0.0007784448434
+phase 1, num_rank1=6, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=9, t=53.466228, num_rank1=5, eta=100, obj=-62540.52048, dobj=-62653.24759, pinf=0.003962994957, dinf=0.02457971961, Gap=0.0009004139099
+phase 1, num_rank1=5, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=10, t=56.60492, num_rank1=5, eta=100, obj=-62591.5262, dobj=-62693.36626, pinf=0.004525113564, dinf=0.007936269365, Gap=0.0008128613466
+phase 1, num_rank1=5, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=11, t=62.07872, num_rank1=5, eta=100, obj=-62593.04832, dobj=-62694.59555, pinf=0.002394504704, dinf=0.001331198453, Gap=0.0008105062455
+phase 1, num_rank1=5, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=12, t=67.377909, num_rank1=5, eta=100, obj=-62595.45792, dobj=-62611.56836, pinf=0.001483780685, dinf=0.001453204117, Gap=0.0001286693925
+phase 1, num_rank1=5, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=13, t=75.229182, num_rank1=7, eta=100, obj=-62599.84937, dobj=-62691.78549, pinf=0.0007190269513, dinf=0.000684523418, Gap=0.0007337711212
+unknown option: -s
+Max Cut
+
+1093 node id 0
+number of edges in max cut problem: 200800
+dimensionality=1094
+number of constraints=1094
+real_new_k=5
+step size=1
+yt iter=0, t=0.404427, num_rank1=5, eta=100, obj=-3803.685307, dobj=-14251.63628, pinf=1.670635629, dinf=0.0006460875447, Gap=0.578631197
+phase 1, num_rank1=5, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=1, t=1.394668, num_rank1=10, eta=100, obj=-19167.08468, dobj=-13688.18599, pinf=0.3433111337, dinf=7.423246247e-06, Gap=0.1667535171
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=2, t=2.300383, num_rank1=10, eta=100, obj=-15065.00909, dobj=-13598.39695, pinf=0.1840447147, dinf=1.108409377e-05, Gap=0.05116492342
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=3, t=3.295799, num_rank1=10, eta=100, obj=-14216.66229, dobj=-13577.37376, pinf=0.1108344341, dinf=1.462743575e-06, Gap=0.02300009705
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=4, t=4.243382, num_rank1=10, eta=100, obj=-13890.62398, dobj=-13571.23467, pinf=0.06968061048, dinf=3.052916198e-06, Gap=0.01162986404
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=5, t=5.134128, num_rank1=13, eta=100, obj=-13741.27878, dobj=-13569.1857, pinf=0.04493381449, dinf=1.688778752e-06, Gap=0.006301129818
+phase 1, num_rank1=13, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=6, t=5.795014, num_rank1=13, eta=100, obj=-13665.73233, dobj=-13568.4422, pinf=0.02940743631, dinf=6.919324962e-06, Gap=0.003572223522
+phase 1, num_rank1=13, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=7, t=6.698691, num_rank1=15, eta=100, obj=-13625.32903, dobj=-13568.1571, pinf=0.01941812457, dinf=1.372219901e-06, Gap=0.002102335414
+phase 1, num_rank1=15, eta=100, epsilon=1e-06
+real_new_k=2
+step size=1
+yt iter=8, t=7.31045, num_rank1=16, eta=100, obj=-13602.09899, dobj=-13568.04591, pinf=0.0129176422, dinf=2.218035705e-06, Gap=0.001253281126
+phase 1, num_rank1=16, eta=100, epsilon=1e-06
+real_new_k=2
+step size=1
+yt iter=9, t=8.564745, num_rank1=14, eta=100, obj=-13588.90302, dobj=-13567.60512, pinf=0.008815479055, dinf=8.307273371e-05, Gap=0.0007842361835
+phase 1, num_rank1=14, eta=100, epsilon=1e-06
+real_new_k=4
+step size=1
+yt iter=10, t=9.698073, num_rank1=16, eta=100, obj=-13312.32026, dobj=-13568.21384, pinf=0.006175335539, dinf=0.000381027547, Gap=0.009519307056
+phase 1, num_rank1=16, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=11, t=10.66656, num_rank1=13, eta=100, obj=-13601.63573, dobj=-13567.84609, pinf=0.003726904998, dinf=1.079539717e-05, Gap=0.001243615742
+phase 1, num_rank1=13, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=12, t=11.602586, num_rank1=10, eta=100, obj=-11498.3995, dobj=-13567.59933, pinf=0.003182837975, dinf=3.352883463e-05, Gap=0.08254677176
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=13, t=12.342997, num_rank1=9, eta=100, obj=-13571.08952, dobj=-13567.96366, pinf=0.001769782645, dinf=6.90461999e-06, Gap=0.0001151754862
+phase 1, num_rank1=9, eta=100, epsilon=1e-06
+real_new_k=3
+step size=1
+yt iter=14, t=13.302501, num_rank1=11, eta=100, obj=-13356.58195, dobj=-13567.9543, pinf=0.0009951454988, dinf=4.65633445e-05, Gap=0.00785025574
+phase 1, num_rank1=11, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=15, t=14.095316, num_rank1=10, eta=100, obj=-13569.26261, dobj=-13567.95223, pinf=0.0008016377729, dinf=1.161532041e-05, Gap=4.828558281e-05
+unknown option: -s
+Max Cut
+
+14094 node id 0
+number of edges in max cut problem: 12340
+dimensionality=14095
+number of constraints=14095
+real_new_k=5
+step size=1
+yt iter=0, t=1.78791, num_rank1=5, eta=100, obj=-61.0681523, dobj=-10465.78461, pinf=0.05608902592, dinf=0.7706480775, Gap=0.9883037589
+phase 1, num_rank1=5, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=1, t=5.365477, num_rank1=10, eta=100, obj=-10595.87439, dobj=-10793.00085, pinf=0.03709494551, dinf=0.1413503817, Gap=0.009215877332
+phase 1, num_rank1=10, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=2, t=7.84891, num_rank1=8, eta=100, obj=-10795.09733, dobj=-10796.66915, pinf=0.004043787072, dinf=0.0005755779081, Gap=7.279402476e-05
+phase 1, num_rank1=8, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=3, t=8.438137, num_rank1=8, eta=100, obj=-10796.45992, dobj=-10796.42079, pinf=8.311598272e-05, dinf=4.717479356e-05, Gap=1.812298937e-06
+unknown option: -s
+Max Cut
+
+14223 node id 0
+number of edges in max cut problem: 12576
+dimensionality=14224
+number of constraints=14224
+real_new_k=5
+step size=1
+yt iter=0, t=1.49098, num_rank1=4, eta=100, obj=-65.98498829, dobj=-10855.34772, pinf=0.02590023511, dinf=0.7513002693, Gap=0.9878258628
+phase 1, num_rank1=4, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=1, t=4.508264, num_rank1=7, eta=100, obj=-8050.057489, dobj=-10968.85805, pinf=0.02476067887, dinf=0.1385880574, Gap=0.1534602272
+phase 1, num_rank1=7, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=2, t=7.145217, num_rank1=5, eta=100, obj=-10959.43906, dobj=-10975.87666, pinf=0.007242598486, dinf=0.2091461646, Gap=0.0007493325788
+phase 1, num_rank1=5, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=3, t=8.412838, num_rank1=4, eta=100, obj=-10964.91398, dobj=-10975.94432, pinf=0.005664539117, dinf=0.002237690542, Gap=0.0005027075775
+phase 1, num_rank1=4, eta=100, epsilon=1e-06
+real_new_k=5
+step size=1
+yt iter=4, t=8.922076, num_rank1=3, eta=100, obj=-10975.98586, dobj=-10975.97247, pinf=7.961358019e-05, dinf=4.096670532e-05, Gap=6.097470599e-07

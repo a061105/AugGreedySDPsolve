@@ -1,0 +1,7 @@
+open random_shuffle
+primme epsilon is important
+
+TODO:
+1. discuss if A b should be put in problem.h
+2. implement linear programming
+3. implement warm start for each new yt

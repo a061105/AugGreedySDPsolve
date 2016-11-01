@@ -8,7 +8,8 @@
 
 # Modify this to show the path of the installed PRIMME directory
 #TOP = /Users/teddy/Dropbox/Lingfei/MyWork/PRIMME_SVDS/PRIMME_1.2
-TOP = /Users/teddy/Documents/Work/GITHUB/AugGreedySDPsolve/PRIMME_1.2
+#TOP = /Users/teddy/Documents/Work/GITHUB/AugGreedySDPsolve/PRIMME_1.2
+TOP = /scratch/cluster/ianyen/zhongkai/SDP/AugGreedySDPsolve/PRIMME_1.2
 
 # Define the path to the source code
 SRC = $(TOP)/PRIMMESRC

@@ -10,15 +10,15 @@ OBJS = testEig.o
 #---------------------------------------------------------------
 # Mac OSX 10.4 using veclib for BLAS/LAPACK
 #
-LDFLAGS = -Wl,-framework -Wl,vecLib -m64
+# LDFLAGS = -Wl,-framework -Wl,vecLib -m64
 # Use -Wl,-framework -Wl,Accelerate -m64 for Mac OS X 10.3
-LIBS = -L${PRIMME_PATH} -lprimme
+# LIBS = -L${PRIMME_PATH} -lprimme
 #---------------------------------------------------------------
 # Linux 2.6.13-15.12-smp (64 bit image)
-#LIBS = -lprimme -lm -L/usr/lib64/ -llapack -lblas -lgfortran -lg2c
-#ifeq ($(CC),c++)
-#LIBS += -lstdc++
-#endif
+LIBS = -L${PRIMME_PATH} -lprimme -lm -L/usr/lib64/ -llapack -lblas -lgfortran -lg2c
+ifeq ($(CC),c++)
+LIBS += -lstdc++
+endif
 
 #---------------------------------------------------------------
 # Preprocessor definition for using F77 under various OS/compilers

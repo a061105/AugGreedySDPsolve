@@ -1,16 +1,16 @@
-driver_par.o: driver_par.c /opt/local/include/openmpi-mp/mpi.h \
-  /opt/local/include/openmpi-mp/mpi_portable_platform.h driver_par.h \
-  ParaSails/ParaSails.h ParaSails/Matrix.h ParaSails/Common.h \
-  ParaSails/Mem.h ParaSails/Numbering.h ParaSails/Hash.h \
-  ParaSails/PrunedRows.h ParaSails/DiagScale.h ParaSails/StoredRows.h \
-  ParaSails/RowPatt.h ParaSails/LoadBal.h shared_utils.h \
-  /Users/teddy/Documents/Work/GITHUB/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/primme.h \
-  /Users/teddy/Documents/Work/GITHUB/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/Complex.h \
-  /Users/teddy/Documents/Work/GITHUB/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/wtime.h
+driver_par.o: driver_par.c /usr/lib/openmpi/include/mpi.h \
+ /usr/lib/openmpi/include/mpi_portable_platform.h driver_par.h \
+ ParaSails/ParaSails.h ParaSails/Matrix.h ParaSails/Common.h \
+ ParaSails/Mem.h ParaSails/Numbering.h ParaSails/Hash.h \
+ ParaSails/PrunedRows.h ParaSails/DiagScale.h ParaSails/StoredRows.h \
+ ParaSails/RowPatt.h ParaSails/LoadBal.h shared_utils.h \
+ /scratch/cluster/ianyen/zhongkai/SDP/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/primme.h \
+ /scratch/cluster/ianyen/zhongkai/SDP/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/Complex.h \
+ /scratch/cluster/ianyen/zhongkai/SDP/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/wtime.h
 readuc.o: readuc.c shared_utils.h \
-  /Users/teddy/Documents/Work/GITHUB/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/primme.h \
-  /Users/teddy/Documents/Work/GITHUB/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/Complex.h
+ /scratch/cluster/ianyen/zhongkai/SDP/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/primme.h \
+ /scratch/cluster/ianyen/zhongkai/SDP/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/Complex.h
 shared_utils.o: shared_utils.c shared_utils.h \
-  /Users/teddy/Documents/Work/GITHUB/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/primme.h \
-  /Users/teddy/Documents/Work/GITHUB/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/Complex.h
+ /scratch/cluster/ianyen/zhongkai/SDP/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/primme.h \
+ /scratch/cluster/ianyen/zhongkai/SDP/AugGreedySDPsolve/PRIMME_1.2/PRIMMESRC/COMMONSRC/Complex.h
 ssrcsr.o: ssrcsr.c
