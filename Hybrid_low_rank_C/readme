@@ -1,0 +1,2 @@
+input file format:
+Each line is a column of the decomposed matrix VC, where C = VC*VC'.

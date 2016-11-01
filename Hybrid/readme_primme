@@ -1,0 +1,4 @@
+Run primme in linux or mac
+
+1) make primme library in linux and mac in primme root directory
+2) uncomment corresponding machine and OS and comment others in Makefile to link the executable file to primme lib.  
