@@ -161,6 +161,10 @@ void runHybrid(Problem* prob, Param param){
 	    clock_t t1 = clock();
 
 	    prob->neg_grad_largest_ev(a,eta,epsilon,new_k,new_us,new_eigenvalues,1); //largest algebraic eigenvector of the negative gradient
+	    cerr<<"evalue="<<new_eigenvalues[0]<<endl;
+	    for (int i=0;i<prob->n;i++)
+		    cerr<<new_us[i]<<" ";
+
 	    t_eig += ((double)(clock() - t1))/CLOCKS_PER_SEC;
 	    //	    for (int ii = 0;ii<new_k;ii++)		    cerr<<new_eigenvalues[ii]<<" "; cerr<<endl;
 	    // push new coordinates into V
@@ -223,7 +227,8 @@ void runHybrid(Problem* prob, Param param){
 		    }
 		    for (int k = 0;k<num_rank1;k++){
 			    int j = innerAct[k];
-			    double delta_theta = -(eta*dot(a,B[j],m)+c[j])/(eta*l2_norm_square(B[j],m));
+			    // double delta_theta = -(eta*dot(a,B[j],m)+c[j])/(eta*l2_norm_square(B[j],m));
+			    double delta_theta = -(eta*dot_nng(a,B[j],m)+c[j])/(eta*l2_norm_square(B[j],m));
 			    if (delta_theta > -theta[j]){
 				    theta[j] += delta_theta;
 				    for (int i=0;i<m;i++)
@@ -291,6 +296,11 @@ void runHybrid(Problem* prob, Param param){
 		    }
 		    pinfea[k] -= prob->b[k];
 	    }
+	    //----nng----begin
+	    for (int k=0;k<prob->m;k++)
+		    pinfea[k] = max(pinfea[k],0.0);
+	    //----nng----end
+	    
 	    //for (int i=0;i<m;i++)
 	    //	cerr<<pinfea[i]<<" ";
 
@@ -299,6 +309,7 @@ void runHybrid(Problem* prob, Param param){
 	    cerr<<"step size="<<alpha<<endl;
 	    // update y
 	    for (int i=0;i<m;i++)
+		    
 		    y[i] += alpha*eta*(pinfea[i]);
 
 	    if( yt_iter % 1==0){ 

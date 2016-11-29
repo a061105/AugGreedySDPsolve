@@ -205,6 +205,18 @@ double dot(double* a, double* b,int size)
         sum += a[i]*b[i];
     return sum;
 }
+
+double dot_nng(double* a, double* b,int size)
+{
+    double sum = 0;
+    for (int i=0;i<size;i++){
+	    if (a[i]>0)
+        	sum += a[i]*b[i];
+    }
+    return sum;
+}
+
+
 double dot(vector<double>& a, vector<double>& b)
 {
     if (a.size() != b.size()){

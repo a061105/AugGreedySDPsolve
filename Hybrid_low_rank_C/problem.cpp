@@ -19,7 +19,8 @@ void set_prob(Problem *prob) {_prob=prob;}
 void allocate_prob_a(int m) {prob_a = new double[m];}
 
 void gradVecProd(void* x, void* y, int* blockSize, primme_params* primme){
-    double* xv = (double*)x;        
+cerr<<"hello"<<endl;
+	double* xv = (double*)x;        
     double* yv = (double*)y;
     for (int i=0;i<_prob->n;i++){
         yv[i] = 0.0;
@@ -32,12 +33,22 @@ void gradVecProd(void* x, void* y, int* blockSize, primme_params* primme){
             for (SparseVec2::iterator vit = it->second.begin();vit != it->second.end(); vit++){
                 tmp += vit->second * xv[vit->first];
             }
-            yv[it->first] += prob_a[k]*tmp;
+	    if (prob_a[k]>0) //for nng
+            	yv[it->first] += prob_a[k]*tmp;
+	
         }
     }
+    prob_eta = 0;
+    
+    for (int i=0;i<_prob->n;i++){
+	    cerr<<xv[i]<<" ";
+    }
+    cerr<<endl;
+
     for (int i=0;i<_prob->n;i++){
 	    yv[i] = -prob_eta * yv[i];
-    } 
+    }
+     
     double* tmpr = new double[_prob->VC.size()];
     for (int j=0;j<_prob->VC.size();j++){
 	    double tmp = 0.0;
@@ -51,10 +62,15 @@ void gradVecProd(void* x, void* y, int* blockSize, primme_params* primme){
 	    for (int j=0;j<_prob->VC.size();j++){
 		    tmp += tmpr[j]*_prob->VC[j][ii];
 	    }
-	    yv[ii] = -tmp;
+	    yv[ii] += tmp;
     }
+ for (int i=0;i<_prob->n;i++){
+	    cerr<<yv[i]<<" ";
+    }
+    cerr<<endl;
 
 
+	exit(0);
 }
 
 
@@ -109,7 +125,9 @@ void Problem::neg_grad_largest_ev(double* a,double eta, double epsilon,int new_k
     /* ------------- */
     //double start2 = omp_get_wtime();
 //    primme_display_params(primme);
+    cerr<<"hello1"<<endl;
     dprimme(evals, evecs, rnorms, &primme);
+    cerr<<"hello2"<<endl;
 
     //cerr << "eig solve time=" << omp_get_wtime()-start2 << endl;
     primme_Free(&primme);
@@ -155,7 +173,8 @@ static lbfgsfloatval_t evaluate(
 		    }
 	    }
 	    aa[k] = aa[k] - _prob->b[k] + y[k]/prob_eta;
-	    fx += aa[k]*aa[k];
+	    if (aa[k]>0) //nng
+	    	fx += aa[k]*aa[k];
     }
     fx *= (prob_eta/2);
     for (int k=0;k<m;k++){
@@ -168,7 +187,8 @@ static lbfgsfloatval_t evaluate(
 			    for (SparseVec2::iterator vit = it->second.begin();vit != it->second.end(); vit++){
 				    tmp += vit->second * v[shift_index+vit->first];
 			    }
-			    gi[it->first] += 2*prob_eta*tmp*aa[k];
+	    		    if (aa[k]>0) //nng
+			    	gi[it->first] += 2*prob_eta*tmp*aa[k];
 		    }
 	    }
     }
@@ -190,8 +210,8 @@ static lbfgsfloatval_t evaluate(
 		    for (int j=0;j<_prob->VC.size();j++){
 		    	tmp += tmpr[j]*_prob->VC[j][ii];
 		    }
-		    gi[ii] = 2*tmp;
-		    fx += tmp*v[shift_index+ii];
+		    gi[ii] -= 2*tmp;
+		    fx -= tmp*v[shift_index+ii];
 	    }
     }
     delete[] tmpr;
@@ -283,7 +303,7 @@ double Problem::uCu(double* new_u){
 	for (int j=0;j<n;j++){
 		tmp += new_u[j]*VC[i][j];
 	}
-	uCuv += tmp*tmp;
+	uCuv -= tmp*tmp;
     }
     return uCuv;
 }
